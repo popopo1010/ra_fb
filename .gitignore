@@ -1,9 +1,6 @@
-# 環境変数（Webhook URL・API Key を含む）
 .env
-
-# Python
-__pycache__/
-*.py[cod]
-*.egg-info/
-.venv/
 venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/

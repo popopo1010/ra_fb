@@ -1,86 +1,75 @@
-# RA_FBシステム
+# RA FB システム
 
-RA（リクルティングアドバイザー）の初回架電の文字起こしからフィードバックを生成し、Slack `#dk_ra_初回架電fb` に投稿するシステム。
+初回架電・法人面談の文字起こしからフィードバックを生成し、Slack に投稿するシステム。
 
----
+## 機能
+
+| 種別 | 説明 | コマンド/入力 |
+|------|------|---------------|
+| **RA** | 初回架電FB | `/rafb`、ファイルアップロード、CLI、Webhook |
+| **CA** | 法人面談FB | `/fb`、CLI、Webhook |
+
+※ 茂野・重野・大城は同一人物。架電記録は `references/long_calls/茂野/` に統合。
 
 ## クイックスタート
 
-### 1. セットアップ（初回のみ）
-
 ```bash
-cd /Users/ikeobook15/RA_FBシステム
-./setup.sh
-source venv/bin/activate
-cp .env.example .env
-# .env を編集して SLACK_WEBHOOK_URL を設定
+# 1. 依存関係
+pip install -r requirements.txt
+
+# 2. 環境変数（.env）
+# ANTHROPIC_API_KEY, SLACK_WEBHOOK_URL, SLACK_BOT_TOKEN, SLACK_APP_TOKEN 等
+
+# 3. CLI で FB 生成（Slack に投稿）
+python scripts/cli.py ra references/long_calls/茂野/TOKAI_EC_茂野_016.md
+
+# 4. Slack サーバー起動（/rafb, /fb が使える）
+python scripts/slack_server.py
 ```
-
-### 2. 使い方
-
-| 方法 | 手順 |
-|------|------|
-| **Cursor** | 架電記録を開いた状態で `/rafb` と入力 |
-| **コマンドライン** | `python scripts/generate_feedback.py references/long_calls/茂野/xxx.md` |
-| **Slack App** | `python scripts/slack_app_server.py` でサーバー起動後、Slack で `/rafb` |
-
----
 
 ## ディレクトリ構成
 
 ```
 RA_FBシステム/
-├── setup.sh                 # セットアップ（venv 作成・依存関係インストール）
-├── requirements.txt
-├── .env                     # 環境変数（gitignore）
-├── .env.example
-├── .cursor/commands/
-│   └── rafb.md              # Cursor 用 /rafb コマンド定義
+├── ra_fb/                 # コアパッケージ
+│   ├── config.py
+│   ├── utils.py
+│   ├── feedback.py       # FB 生成ロジック
+│   └── slack.py          # Slack 投稿
 ├── scripts/
-│   ├── generate_feedback.py  # フィードバック生成＋Slack投稿
-│   ├── post_to_slack.py     # Slack投稿のみ
-│   ├── slack_app_server.py  # Slack /rafb サーバー（Socket Mode・ngrok不要）
-│   └── README.md
-├── docs/
-│   ├── Slack_App実装ガイド.md
-│   └── ローカルSlack連携の手順.md
-└── references/
-    ├── manual/              # 営業マニュアル、PSS
-    │   ├── 営業新規架電マニュアル.md
-    │   └── PSS_プロフェッショナルセリングスキル.md
-    ├── long_calls/          # 架電記録（重野・茂野・小山田）
-    ├── 初回面談_確認チェックリスト.md
-    └── 法人面談議事録/
+│   ├── cli.py            # コマンドライン（ra/ca）
+│   ├── slack_server.py   # Slack /rafb /fb
+│   └── webhook_server.py # Notta × Zapier
+├── references/           # リファレンス（マニュアル・課題整理等）
+│   ├── manual/
+│   ├── long_calls/
+│   └── 法人面談議事録/
+├── docs/                 # 詳細ドキュメント
+└── requirements.txt
 ```
 
----
-
-## セットアップ詳細
-
-### 環境変数（.env）
+## 環境変数
 
 | 変数 | 必須 | 説明 |
 |------|------|------|
-| `SLACK_WEBHOOK_URL` | ○ | #dk_ra_初回架電fb の Incoming Webhook URL |
-| `SLACK_BOT_TOKEN` | Slack App 利用時 | Bot User OAuth Token（xoxb-） |
-| `SLACK_APP_TOKEN` | Slack App 利用時 | App-Level Token（xapp-） |
-| `ANTHROPIC_API_KEY` | オプション | AI フィードバック用（未設定時はテンプレート） |
+| ANTHROPIC_API_KEY | ○ | Claude API キー |
+| SLACK_WEBHOOK_URL | ○ | RA FB 投稿先（#dk_ra_初回架電fb） |
+| SLACK_BOT_TOKEN | ○（Slack 使用時） | Slack Bot Token |
+| SLACK_APP_TOKEN | ○（Slack 使用時） | Slack App-Level Token |
+| SLACK_WEBHOOK_URL_CA | 任意 | CA FB 投稿先 |
+| SLACK_WEBHOOK_URL_茂野 | 任意 | 茂野個別チャンネル |
+| SLACK_WEBHOOK_URL_小山田 | 任意 | 小山田個別チャンネル |
+| WEBHOOK_SECRET | 任意 | Notta Webhook 認証 |
 
-### 仮想環境について
+## 入力方法
 
-macOS などで `pip install` が使えない場合、`./setup.sh` で venv を作成します。
+1. **Slack /rafb, /fb** … モーダルに文字起こしを貼り付け
+2. **Slack ファイルアップロード** … .txt/.md をチャンネルにドロップ（RA のみ）
+3. **CLI** … `python scripts/cli.py ra/ca <ファイルパス>`
+4. **Notta × Zapier** … Webhook に POST（`python scripts/webhook_server.py` + ngrok）
 
-```bash
-./setup.sh
-source venv/bin/activate
-# 以降、python / pip は venv 内のものが使われる
-```
+## ドキュメント
 
----
-
-## 詳細ドキュメント
-
-- [docs/メンバー向けセットアップガイド.md](docs/メンバー向けセットアップガイド.md) … **他メンバーが使えるようにする手順**
-- [scripts/README.md](scripts/README.md) … スクリプトの使い方
-- [docs/Slack_App実装ガイド.md](docs/Slack_App実装ガイド.md) … Slack で /rafb を使う手順
-- [docs/ローカルSlack連携の手順.md](docs/ローカルSlack連携の手順.md) … ローカル環境の構築
+- [Slack 設定](docs/Slack_テキストファイルアップロード設定.md)
+- [Notta × Zapier 連携](docs/Notta_Zapier_連携設定.md)
+- [個別 Slack 連携](docs/Slack_個別連携設定.md)
