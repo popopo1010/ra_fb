@@ -18,7 +18,14 @@ from .config import (
 from .utils import extract_ra_from_path, extract_ra_from_filename, extract_company_name
 from .feedback import generate_feedback_ra, generate_feedback_ca
 from .slack import post_to_slack
-from .company import extract_and_save_company_info, compare_companies, list_companies_by_region_segment
+from .company import (
+    extract_and_save_company_info,
+    supplement_company_master_from_research,
+    compare_companies,
+    list_companies_by_region_segment,
+    update_playbook_from_masters,
+    collect_attract_examples_from_masters,
+)
 
 __all__ = [
     "ROOT",
@@ -39,6 +46,9 @@ __all__ = [
     "generate_feedback_ca",
     "post_to_slack",
     "extract_and_save_company_info",
+    "supplement_company_master_from_research",
     "compare_companies",
     "list_companies_by_region_segment",
+    "update_playbook_from_masters",
+    "collect_attract_examples_from_masters",
 ]

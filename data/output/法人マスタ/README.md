@@ -17,6 +17,12 @@ FB 生成時に文字起こしから抽出した法人情報を格納。**都道
 - 先頭に YAML frontmatter（都道府県・セグメント）必須
 - FB を出すたびに自動で抽出・更新
 
+## 構造（v2・重複排除）
+
+- **企業情報**: 基本情報・事業リサーチ・企業スナップショットを1セクションに統合
+- **候補者別訴求**: 資格・経験軸と前職規模軸を1テーブルに統合
+- **差別化メモ**: 他社との違いに特化（企業の一般論は書かない）
+
 ## 比較コマンド
 
 ```bash
@@ -39,6 +45,16 @@ python scripts/bulk_import_company.py --no-research # リサーチをスキッ�
 
 - `.env` に `ANTHROPIC_API_KEY` を設定すること
 - `duckduckgo-search` が未インストールの場合は `pip install -r requirements.txt`
+
+## 不足項目の補完
+
+FBにない項目（企業スナップショット、前職規模別USP等）をWeb検索で補完。
+
+```bash
+python scripts/supplement_company_research.py              # 全件補完
+python scripts/supplement_company_research.py 会社名       # 指定会社のみ
+python scripts/supplement_company_research.py --dry-run    # 補完対象のみ表示
+```
 
 ## 候補者タイプ
 

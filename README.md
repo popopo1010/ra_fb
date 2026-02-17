@@ -42,7 +42,10 @@ RA_FBシステム/
 │   ├── webhook_server.py     # Notta × Zapier
 │   ├── cli.py                # コマンドライン（ra/ca）
 │   ├── compare_companies.py  # 都道府県×セグメントで法人比較
-│   └── bulk_import_company.py # 過去文字起こしから法人マスタ一括生成
+│   ├── bulk_import_company.py  # 過去文字起こしから法人マスタ一括生成
+│   ├── update_playbook.py    # 法人マスタ→プレイブック「法人別事例」更新
+│   ├── supplement_company_research.py  # 法人マスタの不足項目をWeb検索で補完
+│   └── migrate_company_master.py  # 法人マスタを新構造に移行
 ├── data/
 │   ├── input/                # 入力データ
 │   │   ├── ra/               # 初回架電（RA）文字起こし
@@ -99,7 +102,7 @@ python scripts/bulk_import_company.py             # 実行
 
 ## ドキュメント
 
-- [プロジェクト構成](docs/プロジェクト構成.md) … 全体像・機能一覧・法人マスタ20項目
+- [プロジェクト構成](docs/プロジェクト構成.md) … 全体像・機能一覧・法人マスタ24項目
 - [起動ガイド](docs/起動ガイド.md) … ikeobook15 / kazushi の起動手順
 - [Slack 設定](docs/Slack_テキストファイルアップロード設定.md)
 - [Notta × Zapier 連携](docs/Notta_Zapier_連携設定.md)

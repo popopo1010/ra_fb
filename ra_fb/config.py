@@ -22,6 +22,13 @@ MASTER_DIR = OUTPUT_DIR / "法人マスタ"  # 法人情報（FB生成時に自�
 MANUAL_DIR = REF_DIR / "manual"  # 架電マニュアル・PSS
 CANDIDATE_ATTRACT_DIR = REF_DIR / "candidate_attract"  # 候補者アトラクト
 
+# 事業ドメイン（セグメント）の表示順（プレイブック・法人比較で共通）
+SEGMENT_ORDER = [
+    "電気系", "土木", "建築", "管工事",
+    "DC", "再エネ", "物流", "工場", "オフィス", "公共", "住宅",
+    "商業施設", "自衛隊", "その他",
+]
+
 
 def load_env() -> None:
     """ .env を読み込み"""
