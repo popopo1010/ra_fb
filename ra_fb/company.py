@@ -30,6 +30,7 @@ def _research_company_online(company_name: str) -> str:
         return ""
 
     queries = [
+        (f"{company_name} 公式サイト", True),  # URL取得のためhrefを含める
         f"{company_name} 事業 売上構成",
         f"{company_name} 中期経営計画 IR",
         f"{company_name} 社長メッセージ 経営方針",
@@ -40,15 +41,22 @@ def _research_company_online(company_name: str) -> str:
 
     try:
         ddgs = DDGS()
-        for q in queries:
+        for item in queries:
+            q = item[0] if isinstance(item, tuple) else item
+            include_url = isinstance(item, tuple) and item[1]
             try:
                 results = list(ddgs.text(q, region="jp-jp", max_results=5))
                 for r in results:
                     body = (r.get("body") or "").strip()
                     title = (r.get("title") or "").strip()
-                    if body and body not in seen:
-                        seen.add(body)
-                        all_snippets.append(f"【{title}】\n{body}")
+                    href = (r.get("href") or "").strip()
+                    key = body or href
+                    if key and key not in seen:
+                        seen.add(key)
+                        if include_url and href:
+                            all_snippets.append(f"【{title}】\nURL: {href}\n{body}")
+                        elif body:
+                            all_snippets.append(f"【{title}】\n{body}")
                 time.sleep(0.5)
             except Exception:
                 continue
@@ -108,7 +116,7 @@ def _extract_company_info_with_claude(
     if research_text:
         research_block = f"""
 【Web検索で取得した事業・マーケット情報】
-以下の検索結果から、事業一覧・主軸事業、売上構成比（推定可）、今後の注力領域、マーケットの成長性・競合を抽出し、「## 事業リサーチ」セクションに構造化して記載してください。情報がない項目は「未確認」と記載。
+以下の検索結果から、法人HP URL（公式サイト）、事業一覧・主軸事業、売上構成比（推定可）、今後の注力領域、マーケットの成長性・競合を抽出し、「## 事業リサーチ」セクションに構造化して記載してください。マーケットの成長性には**なぜ成長しているか（背景・要因）**を必ず含めること（成長しているかどうかだけでは判断できない）。URLは検索結果の「URL:」から取得。情報がない項目は「未確認」と記載。
 
 {research_text[:6000]}
 """
@@ -125,7 +133,7 @@ def _extract_company_info_with_claude(
 ・2. 必要経験（年数・内容）
 ・3. 仕事内容（求人ポジションの具体的な業務）
 ・4. 会社の事業内容（主な事業・工事・案件）
-・5. マーケットの成長度合い（その会社がやっているマーケットの成長度。高/中/低、または説明）
+・5. マーケットの成長度合い（成長度＋なぜ成長しているか背景・要因。高/中/低だけでは不十分）
 ・6. 都道府県（勤務地）
 ・7. 未経験OKかどうか（○/△/×）
 ・8. 年齢（条件）
@@ -172,10 +180,11 @@ def _extract_company_info_with_claude(
 ## 事業リサーチ（Web検索で補足）
 | 項目 | 内容 |
 |------|------|
+| 法人HP URL | 公式サイトURL |
 | 事業一覧・主軸事業 | 展開事業の一覧、主軸事業 |
 | 売上構成比 | 各事業の構成比（推定可） |
 | 今後の注力領域 | 中期計画・IR・社長メッセージ等から |
-| マーケットの成長性・競合 | 事業領域の成長性、競合状況 |
+| マーケットの成長性・競合 | 成長性（なぜ成長しているか背景・要因）と競合状況 |
 
 ## 仕事内容
 | 項目 | 内容 |

@@ -21,7 +21,7 @@
 
 ```bash
 python scripts/slack_server.py
-python scripts/cli.py ra references/long_calls/茂野/TOKAI_EC_茂野_016.md
+python scripts/cli.py ra data/input/ra/茂野/TOKAI_EC_茂野_016.md
 python scripts/compare_companies.py 愛知 電気系
 python scripts/bulk_import_company.py --dry-run   # 過去文字起こしから法人マスタ一括生成（予覧）
 python scripts/bulk_import_company.py             # 実行

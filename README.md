@@ -9,7 +9,7 @@
 | **RA** | 初回架電FB | `/rafb`、ファイルアップロード、CLI、Webhook |
 | **CA** | 法人面談FB | `/fb`、CLI、Webhook |
 
-※ 茂野・重野・大城は同一人物。架電記録は `references/long_calls/茂野/` に統合。
+※ 茂野・重野・大城は同一人物。架電記録は `data/input/ra/茂野/` に統合。
 
 ## クイックスタート
 
@@ -21,7 +21,7 @@ pip install -r requirements.txt
 # ANTHROPIC_API_KEY, SLACK_WEBHOOK_URL, SLACK_BOT_TOKEN, SLACK_APP_TOKEN 等
 
 # 3. CLI で FB 生成（Slack に投稿）
-python scripts/cli.py ra references/long_calls/茂野/TOKAI_EC_茂野_016.md
+python scripts/cli.py ra data/input/ra/茂野/TOKAI_EC_茂野_016.md
 
 # 4. Slack サーバー起動（/rafb, /fb が使える）
 python scripts/slack_server.py
@@ -43,12 +43,15 @@ RA_FBシステム/
 │   ├── cli.py                # コマンドライン（ra/ca）
 │   ├── compare_companies.py  # 都道府県×セグメントで法人比較
 │   └── bulk_import_company.py # 過去文字起こしから法人マスタ一括生成
+├── data/
+│   ├── input/                # 入力データ
+│   │   ├── ra/               # 初回架電（RA）文字起こし
+│   │   └── ca/               # 法人面談（CA）議事録
+│   └── output/
+│       └── 法人マスタ/        # FB生成時に自動抽出・格納（事業リサーチ含む）
 ├── references/
 │   ├── manual/               # 架電マニュアル・PSS・チェックリスト
-│   ├── candidate_attract/    # 候補者アトラクト
-│   ├── 法人マスタ/           # FB生成時に自動抽出・格納（事業リサーチ含む）
-│   ├── long_calls/           # 初回架電（RA）文字起こし
-│   └── 法人面談議事録/       # 法人面談（CA）議事録
+│   └── candidate_attract/    # 候補者アトラクト
 ├── docs/
 ├── pyproject.toml
 └── requirements.txt
@@ -70,9 +73,9 @@ RA_FBシステム/
 
 ## 法人情報の自動格納・比較（都道府県×セグメント）
 
-FB を出すたびに、文字起こしから法人情報を抽出し `references/法人マスタ/{会社名}.md` に保存。**都道府県×セグメント**で比較可能。
+FB を出すたびに、文字起こしから法人情報を抽出し `data/output/法人マスタ/{会社名}.md` に保存。**都道府県×セグメント**で比較可能。
 
-- **マスタ項目**: [references/法人マスタ/マスタ項目一覧.md](references/法人マスタ/マスタ項目一覧.md)
+- **マスタ項目**: [data/output/法人マスタ/マスタ項目一覧.md](data/output/法人マスタ/マスタ項目一覧.md)
 
 ```bash
 # 比較（例: 愛知 × 電気系）

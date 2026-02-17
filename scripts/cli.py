@@ -3,7 +3,7 @@
 RA/CA FB 生成 CLI
 
 使い方:
-  python scripts/cli.py ra references/long_calls/茂野/TOKAI_EC_茂野_016.md
+  python scripts/cli.py ra data/input/ra/茂野/TOKAI_EC_茂野_016.md
   python scripts/cli.py ca path/to/transcript.md --no-slack
 """
 

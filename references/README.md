@@ -1,6 +1,6 @@
-# リファレンス
+# 参照資料
 
-RA/CA FB 生成で参照するマニュアル・課題整理・サンプル、および入出力データを格納。
+RA/CA FB 生成で参照するマニュアル・ガイドを格納。
 
 ## ディレクトリ構成
 
@@ -10,32 +10,21 @@ references/
 │   ├── 営業新規架電マニュアル.md
 │   ├── PSS_プロフェッショナルセリングスキル.md
 │   └── 初回面談_確認チェックリスト.md
-├── candidate_attract/         # 候補者アトラクト（会社の魅力の伝え方）
-│   └── recruitment-playbook.md
-├── 法人マスタ/                 # 法人情報（FB生成時に自動抽出・格納）
-│   ├── マスタ項目一覧.md
-│   ├── _template_法人情報.md
-│   └── {会社名}.md            # 都道府県×セグメントで比較
-├── long_calls/                # 初回架電（RA）文字起こし
-│   ├── 茂野/                  # 茂野・重野・大城（同一人物）
-│   ├── 小山田/
-│   ├── 受付突破_断りパターンと繋ぎ方.md
-│   └── 茂野vs小山田_課題整理.md
-└── 法人面談議事録/            # 法人面談（CA）議事録
-    ├── _template_議事録.md
-    └── {企業名}_議事録.md
+└── candidate_attract/         # 候補者アトラクト（会社の魅力の伝え方）
+    └── recruitment-playbook.md
 ```
 
-## データの流れ
+## データの場所
 
-| 種別 | 入力 | 出力 |
-|------|------|------|
-| RA | `long_calls/` の文字起こし | FB → Slack、法人マスタ |
-| CA | `法人面談議事録/` の議事録 | FB → Slack、法人マスタ |
+| 種別 | パス |
+|------|------|
+| 入力（RA） | `data/input/ra/` |
+| 入力（CA） | `data/input/ca/` |
+| 出力（法人マスタ） | `data/output/法人マスタ/` |
 
 ## FB 生成での参照
 
 | 種別 | 参照ファイル |
 |------|--------------|
 | RA | manual, pss, checklist, reception, kadai, attract |
-| CA | template, manual |
+| CA | template（data/input/ca/_template_議事録.md）, manual |

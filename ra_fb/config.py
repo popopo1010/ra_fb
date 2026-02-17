@@ -6,10 +6,19 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 
 # パス定数（一箇所で管理）
+DATA_DIR = ROOT / "data"
+INPUT_DIR = DATA_DIR / "input"
+OUTPUT_DIR = DATA_DIR / "output"
 REF_DIR = ROOT / "references"
-MASTER_DIR = REF_DIR / "法人マスタ"  # 法人情報（FB生成時に自動格納）
-LONG_CALLS_DIR = REF_DIR / "long_calls"  # 初回架電（RA）文字起こし
-CA_DIR = REF_DIR / "法人面談議事録"  # 法人面談（CA）議事録
+
+# 入力データ
+LONG_CALLS_DIR = INPUT_DIR / "ra"  # 初回架電（RA）文字起こし
+CA_DIR = INPUT_DIR / "ca"  # 法人面談（CA）議事録
+
+# 出力データ
+MASTER_DIR = OUTPUT_DIR / "法人マスタ"  # 法人情報（FB生成時に自動格納）
+
+# 参照資料
 MANUAL_DIR = REF_DIR / "manual"  # 架電マニュアル・PSS
 CANDIDATE_ATTRACT_DIR = REF_DIR / "candidate_attract"  # 候補者アトラクト
 

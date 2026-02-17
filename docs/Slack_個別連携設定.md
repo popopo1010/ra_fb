@@ -24,7 +24,7 @@ SLACK_WEBHOOK_URL_茂野=https://hooks.slack.com/services/ddd/eee/fff
 |----------|------------|
 | **/rafb モーダル** | モーダルの「RA」プルダウンで選択 |
 | **ファイルアップロード** | ファイル名に RA 名を含める（例: `ZENITAKA_小山田_002.md`） |
-| **CLI** | ファイルパスに RA 名を含める（例: `references/long_calls/小山田/xxx.md`） |
+| **CLI** | ファイルパスに RA 名を含める（例: `data/input/ra/小山田/xxx.md`） |
 
 ## 動作
 

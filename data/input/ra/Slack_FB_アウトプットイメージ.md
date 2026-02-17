@@ -7,7 +7,7 @@
 
 ## サンプル元
 
-- **ファイル**: `references/long_calls/茂野/TOKAI_EC_茂野_016.md`
+- **ファイル**: `data/input/ra/茂野/TOKAI_EC_茂野_016.md`
 - **企業**: 東海EC
 - **RA**: 茂野
 - **種別**: フォローアップ架電

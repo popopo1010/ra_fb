@@ -11,4 +11,4 @@
 | [Slack_rafb_fb_コマンド設定.md](Slack_rafb_fb_コマンド設定.md) | /rafb, /fb の Slash コマンド追加 |
 | [Notta_Zapier_連携設定.md](Notta_Zapier_連携設定.md) | Notta × Zapier × Webhook 連携 |
 | [問題点・改善レポート.md](問題点・改善レポート.md) | 既知の問題・改善履歴 |
-| [../references/法人マスタ/README.md](../references/法人マスタ/README.md) | 法人マスタ（都道府県×セグメント比較・一括取り込み） |
+| [../data/output/法人マスタ/README.md](../data/output/法人マスタ/README.md) | 法人マスタ（都道府県×セグメント比較・一括取り込み） |
