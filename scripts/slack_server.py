@@ -22,6 +22,7 @@ from ra_fb import (
     generate_feedback_ra,
     generate_feedback_ca,
     post_to_slack,
+    extract_and_save_company_info,
 )
 
 load_env()
@@ -141,6 +142,12 @@ def view_rafb(ack, body, client, view):
     def _do():
         msg = generate_feedback_ra(transcript, ra_name=ra_name, company_name=company_name)
         post_to_slack(msg, ra_name=ra_name)
+        try:
+            extract_and_save_company_info(
+                transcript, company_name=company_name, source_type="ra", use_research=True
+            )
+        except Exception:
+            pass
 
     threading.Thread(target=_do, daemon=True).start()
 
@@ -166,6 +173,12 @@ def view_cafb(ack, body, client, view):
         msg = generate_feedback_ca(transcript, company_name=company_name)
         url = os.environ.get("SLACK_WEBHOOK_URL_CA") or SLACK_WEBHOOK_URL
         post_to_slack(msg, webhook_url=url)
+        try:
+            extract_and_save_company_info(
+                transcript, company_name=company_name, source_type="ca", use_research=True
+            )
+        except Exception:
+            pass
 
     threading.Thread(target=_do, daemon=True).start()
 
@@ -193,6 +206,12 @@ def evt_file_shared(event, client):
     def _do():
         msg = generate_feedback_ra(text, ra_name=ra_name, company_name=company_name)
         post_to_slack(msg, ra_name=ra_name)
+        try:
+            extract_and_save_company_info(
+                text, company_name=company_name, source_type="ra", use_research=True
+            )
+        except Exception:
+            pass
 
     threading.Thread(target=_do, daemon=True).start()
 

@@ -13,6 +13,7 @@ dependencies = [
     "anthropic>=0.39.0",
     "slack_bolt>=1.18.0",
     "flask>=3.0.0",
+    "duckduckgo-search>=7.0.0",
 ]
 
 [tool.setuptools.packages.find]

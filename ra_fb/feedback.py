@@ -6,7 +6,7 @@ import os
 from pathlib import Path
 from typing import Dict
 
-from .config import ROOT, load_env
+from .config import load_env, MANUAL_DIR, CANDIDATE_ATTRACT_DIR, LONG_CALLS_DIR, CA_DIR
 
 load_env()
 
@@ -21,7 +21,7 @@ def _load_candidate_attract() -> str:
         p = Path(sales_path) / "reference" / "domain" / "construction" / "04-recruitment-playbook.md"
         if p.exists():
             return p.read_text(encoding="utf-8")[:6000]
-    p = ROOT / "references" / "candidate_attract" / "recruitment-playbook.md"
+    p = CANDIDATE_ATTRACT_DIR / "recruitment-playbook.md"
     if p.exists():
         return p.read_text(encoding="utf-8")[:6000]
     return ""
@@ -31,11 +31,11 @@ def _load_references_ra() -> Dict[str, str]:
     """RA 用リファレンス"""
     refs = {}
     paths = {
-        "manual": ROOT / "references" / "manual" / "営業新規架電マニュアル.md",
-        "pss": ROOT / "references" / "manual" / "PSS_プロフェッショナルセリングスキル.md",
-        "checklist": ROOT / "references" / "初回面談_確認チェックリスト.md",
-        "reception": ROOT / "references" / "long_calls" / "受付突破_断りパターンと繋ぎ方.md",
-        "kadai": ROOT / "references" / "long_calls" / "茂野vs小山田_課題整理.md",
+        "manual": MANUAL_DIR / "営業新規架電マニュアル.md",
+        "pss": MANUAL_DIR / "PSS_プロフェッショナルセリングスキル.md",
+        "checklist": MANUAL_DIR / "初回面談_確認チェックリスト.md",
+        "reception": LONG_CALLS_DIR / "受付突破_断りパターンと繋ぎ方.md",
+        "kadai": LONG_CALLS_DIR / "茂野vs小山田_課題整理.md",
     }
     limits = {"manual": 7000, "pss": 10000, "checklist": 4000, "reception": 4000, "kadai": 6000}
     for key, p in paths.items():
@@ -51,8 +51,8 @@ def _load_references_ca() -> Dict[str, str]:
     """CA 用リファレンス"""
     refs = {}
     paths = {
-        "template": ROOT / "references" / "法人面談議事録" / "_template_議事録.md",
-        "manual": ROOT / "references" / "manual" / "営業新規架電マニュアル.md",
+        "template": CA_DIR / "_template_議事録.md",
+        "manual": MANUAL_DIR / "営業新規架電マニュアル.md",
     }
     for key, p in paths.items():
         if p.exists():

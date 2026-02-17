@@ -22,6 +22,7 @@ from ra_fb import (
     generate_feedback_ra,
     generate_feedback_ca,
     post_to_slack,
+    extract_and_save_company_info,
 )
 
 load_env()
@@ -33,6 +34,8 @@ def main():
     parser.add_argument("transcript", type=Path, help="文字起こしファイル")
     parser.add_argument("--no-slack", action="store_true", help="Slackに送らない")
     parser.add_argument("--no-ai", action="store_true", help="AIを使わずテンプレートのみ")
+    parser.add_argument("--no-company", action="store_true", help="法人情報を抽出・保存しない")
+    parser.add_argument("--no-research", action="store_true", help="事業リサーチ（Web検索）をスキップ")
     parser.add_argument("--ra-name", type=str, default="", help="RA名（type=ra時）")
     parser.add_argument("--company-name", type=str, default="", help="会社名")
     args = parser.parse_args()
@@ -55,6 +58,19 @@ def main():
         )
 
     print(full_message)
+
+    if not args.no_company and not args.no_ai:
+        try:
+            saved = extract_and_save_company_info(
+                transcript,
+                company_name=company_name,
+                source_type=args.type,
+                use_research=not args.no_research,
+            )
+            if saved:
+                print(f"\n📁 法人情報を保存: {saved}", file=sys.stderr)
+        except Exception as e:
+            print(f"\n⚠️ 法人情報の保存に失敗: {e}", file=sys.stderr)
 
     if not args.no_slack:
         if args.type == "ra":

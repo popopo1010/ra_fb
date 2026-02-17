@@ -14,7 +14,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from ra_fb import load_env, generate_feedback_ra, generate_feedback_ca, post_to_slack
+from ra_fb import load_env, generate_feedback_ra, generate_feedback_ca, post_to_slack, extract_and_save_company_info
 
 load_env()
 
@@ -57,6 +57,15 @@ def webhook_notta():
             full_message = generate_feedback_ca(transcript, company_name=company_name)
             url = os.environ.get("SLACK_WEBHOOK_URL_CA") or os.environ.get("SLACK_WEBHOOK_URL")
             posted = post_to_slack(full_message, webhook_url=url)
+        try:
+            extract_and_save_company_info(
+                transcript,
+                company_name=company_name,
+                source_type=fb_type,
+                use_research=True,
+            )
+        except Exception:
+            pass
     except Exception as e:
         return jsonify({"ok": False, "error": str(e)[:500]}), 500
 

@@ -31,24 +31,26 @@ python scripts/slack_server.py
 
 ```
 RA_FBシステム/
-├── ra_fb/                 # コアパッケージ
-│   ├── config.py
+├── ra_fb/                    # コアパッケージ
+│   ├── config.py             # 設定・パス定数
 │   ├── utils.py
-│   ├── feedback.py       # FB 生成ロジック
-│   └── slack.py          # Slack 投稿
+│   ├── feedback.py           # FB 生成ロジック
+│   ├── slack.py              # Slack 投稿
+│   └── company.py            # 法人情報抽出・事業リサーチ・比較
 ├── scripts/
-│   ├── slack_server.py   # Slack /rafb /fb（メイン起動）
-│   ├── webhook_server.py # Notta × Zapier
-│   ├── cli.py            # コマンドライン（ra/ca）
-│   └── README.md         # スクリプト一覧
-├── references/           # リファレンス（マニュアル・課題整理等）
-│   ├── manual/
-│   ├── candidate_attract/  # 候補者アトラクト（会社の魅力の伝え方）
-│   ├── long_calls/
-│   └── 法人面談議事録/
-├── docs/                 # 詳細ドキュメント
-│   └── 起動ガイド.md     # ikeobook15 / kazushi 起動手順
-├── pyproject.toml        # パッケージ定義
+│   ├── slack_server.py       # Slack /rafb /fb（メイン起動）
+│   ├── webhook_server.py     # Notta × Zapier
+│   ├── cli.py                # コマンドライン（ra/ca）
+│   ├── compare_companies.py  # 都道府県×セグメントで法人比較
+│   └── bulk_import_company.py # 過去文字起こしから法人マスタ一括生成
+├── references/
+│   ├── manual/               # 架電マニュアル・PSS・チェックリスト
+│   ├── candidate_attract/    # 候補者アトラクト
+│   ├── 法人マスタ/           # FB生成時に自動抽出・格納（事業リサーチ含む）
+│   ├── long_calls/           # 初回架電（RA）文字起こし
+│   └── 法人面談議事録/       # 法人面談（CA）議事録
+├── docs/
+├── pyproject.toml
 └── requirements.txt
 ```
 
@@ -66,6 +68,25 @@ RA_FBシステム/
 | WEBHOOK_SECRET | 任意 | Notta Webhook 認証 |
 | SALES_FB_AGENT_PATH | 任意 | sales-fb-agent のパス（候補者アトラクト参照。未設定時は references/candidate_attract/ を使用） |
 
+## 法人情報の自動格納・比較（都道府県×セグメント）
+
+FB を出すたびに、文字起こしから法人情報を抽出し `references/法人マスタ/{会社名}.md` に保存。**都道府県×セグメント**で比較可能。
+
+- **マスタ項目**: [references/法人マスタ/マスタ項目一覧.md](references/法人マスタ/マスタ項目一覧.md)
+
+```bash
+# 比較（例: 愛知 × 電気系）
+python scripts/compare_companies.py 愛知 電気系
+```
+
+CLI で `--no-company` を付けると法人情報の保存を無効化。
+
+```bash
+# 過去の文字起こしから法人マスタを一括生成（再アップロード不要）
+python scripts/bulk_import_company.py --dry-run   # 予覧
+python scripts/bulk_import_company.py             # 実行
+```
+
 ## 入力方法
 
 1. **Slack /rafb, /fb** … モーダルに文字起こしを貼り付け
@@ -75,6 +96,7 @@ RA_FBシステム/
 
 ## ドキュメント
 
+- [プロジェクト構成](docs/プロジェクト構成.md) … 全体像・機能一覧・法人マスタ20項目
 - [起動ガイド](docs/起動ガイド.md) … ikeobook15 / kazushi の起動手順
 - [Slack 設定](docs/Slack_テキストファイルアップロード設定.md)
 - [Notta × Zapier 連携](docs/Notta_Zapier_連携設定.md)
