@@ -37,15 +37,18 @@ RA_FBシステム/
 │   ├── feedback.py       # FB 生成ロジック
 │   └── slack.py          # Slack 投稿
 ├── scripts/
+│   ├── slack_server.py   # Slack /rafb /fb（メイン起動）
+│   ├── webhook_server.py # Notta × Zapier
 │   ├── cli.py            # コマンドライン（ra/ca）
-│   ├── slack_server.py   # Slack /rafb /fb
-│   └── webhook_server.py # Notta × Zapier
+│   └── README.md         # スクリプト一覧
 ├── references/           # リファレンス（マニュアル・課題整理等）
 │   ├── manual/
 │   ├── candidate_attract/  # 候補者アトラクト（会社の魅力の伝え方）
 │   ├── long_calls/
 │   └── 法人面談議事録/
 ├── docs/                 # 詳細ドキュメント
+│   └── 起動ガイド.md     # ikeobook15 / kazushi 起動手順
+├── pyproject.toml        # パッケージ定義
 └── requirements.txt
 ```
 
@@ -72,6 +75,7 @@ RA_FBシステム/
 
 ## ドキュメント
 
+- [起動ガイド](docs/起動ガイド.md) … ikeobook15 / kazushi の起動手順
 - [Slack 設定](docs/Slack_テキストファイルアップロード設定.md)
 - [Notta × Zapier 連携](docs/Notta_Zapier_連携設定.md)
 - [個別 Slack 連携](docs/Slack_個別連携設定.md)

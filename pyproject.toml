@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ra-fb"
+version = "1.0.0"
+description = "初回架電・法人面談の文字起こしからフィードバックを生成しSlackに投稿"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "python-dotenv>=1.0.0",
+    "anthropic>=0.39.0",
+    "slack_bolt>=1.18.0",
+    "flask>=3.0.0",
+]
+
+[tool.setuptools.packages.find]
+include = ["ra_fb*"]
