@@ -1,6 +1,9 @@
 """Slack 投稿"""
 
+from __future__ import annotations
+
 import json
+from typing import List, Optional
 import os
 import sys
 import urllib.request
@@ -12,7 +15,7 @@ load_env()
 SLACK_TEXT_LIMIT = 3000
 
 
-def _chunk_text(text: str, limit: int = SLACK_TEXT_LIMIT) -> list[str]:
+def _chunk_text(text: str, limit: int = SLACK_TEXT_LIMIT) -> List[str]:
     """長文をSlack制限内で分割"""
     if len(text) <= limit:
         return [text]
@@ -53,7 +56,7 @@ def _post_to_webhook(url: str, text: str) -> bool:
 
 def post_to_slack(
     text: str,
-    webhook_url: str | None = None,
+    webhook_url: Optional[str] = None,
     ra_name: str = "",
 ) -> bool:
     """Slackに投稿。ra_name 指定時は個別Webhookにも投稿"""

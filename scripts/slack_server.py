@@ -10,6 +10,7 @@ import os
 import sys
 import threading
 from pathlib import Path
+from typing import Optional, Tuple
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
@@ -43,7 +44,7 @@ if not SLACK_BOT_TOKEN or not SLACK_APP_TOKEN:
 app = App(token=SLACK_BOT_TOKEN)
 
 
-def _download_slack_file(client, file_id: str) -> tuple[str | None, str | None, str | None, str]:
+def _download_slack_file(client, file_id: str) -> Tuple[Optional[str], Optional[str], Optional[str], str]:
     """Slack ファイルをダウンロード。戻り値: (text, channel_id, user_id, filename)"""
     try:
         resp = client.files_info(file=file_id)

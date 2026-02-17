@@ -1,14 +1,17 @@
 """FB 生成ロジック（RA・CA）"""
 
+from __future__ import annotations
+
 import os
 from pathlib import Path
+from typing import Dict
 
 from .config import ROOT, load_env
 
 load_env()
 
 
-def _load_references_ra() -> dict[str, str]:
+def _load_references_ra() -> Dict[str, str]:
     """RA 用リファレンス"""
     refs = {}
     paths = {
@@ -25,7 +28,7 @@ def _load_references_ra() -> dict[str, str]:
     return refs
 
 
-def _load_references_ca() -> dict[str, str]:
+def _load_references_ca() -> Dict[str, str]:
     """CA 用リファレンス"""
     refs = {}
     paths = {
@@ -38,7 +41,7 @@ def _load_references_ca() -> dict[str, str]:
     return refs
 
 
-def _generate_ra_with_claude(transcript: str, refs: dict[str, str], ra_name: str = "") -> str:
+def _generate_ra_with_claude(transcript: str, refs: Dict[str, str], ra_name: str = "") -> str:
     """Claude API で RA FB を生成"""
     try:
         from anthropic import Anthropic
@@ -98,7 +101,7 @@ def _generate_ra_with_claude(transcript: str, refs: dict[str, str], ra_name: str
         return f"[AI生成エラー: {e}]\n\n" + _template_ra(ra_name)
 
 
-def _generate_ca_with_claude(transcript: str, refs: dict[str, str]) -> str:
+def _generate_ca_with_claude(transcript: str, refs: Dict[str, str]) -> str:
     """Claude API で CA FB を生成"""
     try:
         from anthropic import Anthropic
