@@ -42,6 +42,7 @@ RA_FBシステム/
 │   └── webhook_server.py # Notta × Zapier
 ├── references/           # リファレンス（マニュアル・課題整理等）
 │   ├── manual/
+│   ├── candidate_attract/  # 候補者アトラクト（会社の魅力の伝え方）
 │   ├── long_calls/
 │   └── 法人面談議事録/
 ├── docs/                 # 詳細ドキュメント
@@ -60,6 +61,7 @@ RA_FBシステム/
 | SLACK_WEBHOOK_URL_茂野 | 任意 | 茂野個別チャンネル |
 | SLACK_WEBHOOK_URL_小山田 | 任意 | 小山田個別チャンネル |
 | WEBHOOK_SECRET | 任意 | Notta Webhook 認証 |
+| SALES_FB_AGENT_PATH | 任意 | sales-fb-agent のパス（候補者アトラクト参照。未設定時は references/candidate_attract/ を使用） |
 
 ## 入力方法
 

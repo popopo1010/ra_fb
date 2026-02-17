@@ -11,6 +11,22 @@ from .config import ROOT, load_env
 load_env()
 
 
+def _load_candidate_attract() -> str:
+    """候補者アトラクト（会社の魅力の伝え方）を読み込む。
+    SALES_FB_AGENT_PATH が設定されていれば sales-fb-agent から、
+    なければ references/candidate_attract/ のローカルコピーを使用。
+    """
+    sales_path = os.environ.get("SALES_FB_AGENT_PATH")
+    if sales_path:
+        p = Path(sales_path) / "reference" / "domain" / "construction" / "04-recruitment-playbook.md"
+        if p.exists():
+            return p.read_text(encoding="utf-8")[:6000]
+    p = ROOT / "references" / "candidate_attract" / "recruitment-playbook.md"
+    if p.exists():
+        return p.read_text(encoding="utf-8")[:6000]
+    return ""
+
+
 def _load_references_ra() -> Dict[str, str]:
     """RA 用リファレンス"""
     refs = {}
@@ -25,6 +41,9 @@ def _load_references_ra() -> Dict[str, str]:
     for key, p in paths.items():
         if p.exists():
             refs[key] = p.read_text(encoding="utf-8")[: limits.get(key, 8000)]
+    attract = _load_candidate_attract()
+    if attract:
+        refs["attract"] = attract
     return refs
 
 
@@ -66,6 +85,7 @@ def _generate_ra_with_claude(transcript: str, refs: Dict[str, str], ra_name: str
 ・checklist: 初回面談の確認項目
 ・reception: 受付突破の断りパターンと繋ぎ方
 ・kadai: 課題整理・改善の観点
+・attract: 候補者アトラクト（訴求軸・候補者タイプ×セグメント・伝え方）※あれば
 
 【評価のスタンス】
 ・指摘は厳しく。聞けていない項目は「未確認」。マークダウンは使わず、【】と・を使用。
@@ -74,13 +94,14 @@ def _generate_ra_with_claude(transcript: str, refs: Dict[str, str], ra_name: str
 ## リファレンス
 {ref_text}
 
-## 出力形式（6項目、マークダウンなし）
+## 出力形式（7項目、マークダウンなし）
 1. 【良かった点】
 2. 【改善点】
 3. 【採用概要状況】採用必要数・エリア・資格・年齢・経験・年収・出張・重視点等。未確認は「未確認」
 4. 【進めるにあたっての障壁】
 5. 【具体的に聞き方を変えた方がいい点と言い回し】
-6. 【全体所感】
+6. 【この会社の魅力を候補者に伝える時に、どう伝えるといいか】attract を参照し、この企業のセグメント・候補者タイプに合わせた訴求の軸・言い回しを具体的に
+7. 【全体所感】
 
 ## 文字起こし（出力に含めない）
 {transcript[:12000]}
@@ -170,6 +191,9 @@ def _template_ra(ra_name: str) -> str:
 
 【具体的に聞き方を変えた方がいい点と言い回し】
 ・（同上）
+
+【この会社の魅力を候補者に伝える時に、どう伝えるといいか】
+・（同上。references/candidate_attract/ または sales-fb-agent を参照）
 
 【全体所感】
 ・（同上）
