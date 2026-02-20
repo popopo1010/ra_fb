@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>電気施工管理 構造マップ v4（電気特化版）</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0d13;--surface:#13161f;--s2:#1a1e2a;--s3:#222838;--border:#2a3045;--text:#e2e4eb;--tm:#a0a5bb;--td:#6b7190;--blue:#4a8eff;--orange:#ff8c42;--green:#34d399;--red:#f87171;--purple:#a78bfa;--yellow:#fbbf24;--cyan:#22d3ee;--pink:#f472b6;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);padding:32px 16px 80px;font-size:13px;line-height:1.6;}
+.ctn{max-width:960px;margin:0 auto;}
+.hd{text-align:center;margin-bottom:6px;}
+.hd h1{font-size:20px;font-weight:900;background:linear-gradient(135deg,var(--blue),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:3px;}
+.hd p{font-size:11px;color:var(--td);}
+.tabs{display:flex;gap:3px;margin:16px 0;background:var(--surface);border-radius:12px;padding:3px;border:1px solid var(--border);}
+.tab{flex:1;padding:10px 6px;text-align:center;font-size:10px;font-weight:600;border-radius:9px;cursor:pointer;color:var(--td);transition:all .2s;user-select:none;}
+.tab:hover{color:var(--tm);background:var(--s2);}
+.tab.on{background:var(--s3);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.3);}
+.tc{display:none;}.tc.on{display:block;}
+.ctrl{display:flex;justify-content:center;gap:8px;margin-bottom:14px;}
+.cb{font-family:'Noto Sans JP';font-size:10px;color:var(--td);background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:6px 12px;cursor:pointer;}
+.cb:hover{background:var(--s2);color:var(--text);}
+.sb{display:flex;align-items:center;gap:9px;margin:22px 0 10px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.sb .ic{font-size:17px;width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sb h2{font-size:14px;font-weight:700;}
+.sb .su{font-size:10px;color:var(--td);}
+/* Tree */
+.t1{background:var(--surface);border:1px solid var(--border);border-radius:11px;margin-bottom:6px;overflow:hidden;}
+.t1h{display:flex;align-items:center;gap:8px;padding:12px 16px;cursor:pointer;user-select:none;transition:background .15s;}
+.t1h:hover{background:var(--s2);}
+.tn{font-size:9px;font-weight:700;width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.tt{font-size:13px;font-weight:700;flex:1;}
+.badge{font-size:9px;padding:2px 7px;border-radius:9px;font-weight:600;flex-shrink:0;}
+.badge.new{background:rgba(248,113,113,.15);color:var(--red);}
+.badge.upd{background:rgba(255,140,66,.15);color:var(--orange);}
+.chv{font-size:11px;color:var(--td);transition:transform .2s;flex-shrink:0;}
+.t1.o .chv{transform:rotate(90deg);}
+.t1c{display:none;padding:0 16px 12px 44px;}
+.t1.o .t1c{display:block;}
+.t2{margin:4px 0;border-left:2px solid var(--border);padding-left:12px;}
+.t2h{display:flex;align-items:flex-start;gap:6px;padding:5px 8px;border-radius:7px;cursor:pointer;transition:background .15s;}
+.t2h:hover{background:rgba(255,255,255,.02);}
+.tg{font-size:8px;font-weight:700;padding:2px 5px;border-radius:3px;flex-shrink:0;margin-top:1px;}
+.tg.cause{background:rgba(255,140,66,.12);color:var(--orange);}
+.tg.issue{background:rgba(248,113,113,.12);color:var(--red);}
+.tg.data{background:rgba(74,142,255,.12);color:var(--blue);}
+.tg.hear{background:rgba(52,211,153,.12);color:var(--green);}
+.tg.connect{background:rgba(34,211,238,.12);color:var(--cyan);}
+.tg.new{background:rgba(248,113,113,.15);color:var(--red);}
+.t2t{font-size:11.5px;font-weight:500;line-height:1.5;flex:1;color:var(--tm);}
+.t2t strong{color:var(--text);font-weight:600;}
+.c2{font-size:9px;color:var(--td);transition:transform .2s;flex-shrink:0;margin-top:2px;opacity:.5;}
+.t2.o .c2{transform:rotate(90deg);}
+.t2c{display:none;padding:2px 0 3px 24px;}
+.t2.o .t2c{display:block;}
+.l3{font-size:10.5px;color:var(--td);padding:3px 8px;margin:1px 0;border-left:1px solid rgba(42,48,69,.5);padding-left:10px;line-height:1.5;}
+.l3 .g{font-size:9px;font-weight:600;margin-right:3px;}
+.l3 .g.ex{color:var(--cyan);}.l3 .g.pt{color:var(--green);}.l3 .g.wr{color:var(--orange);}.l3 .g.q{color:var(--pink);}.l3 .g.num{color:var(--yellow);}.l3 .g.nw{color:var(--red);}
+/* Loop */
+.lw{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px;overflow-x:auto;}
+.lt{font-size:13px;font-weight:700;margin-bottom:3px;}
+.ls{font-size:10px;color:var(--td);margin-bottom:14px;}
+svg text{font-family:'Noto Sans JP',sans-serif;}
+/* Cards */
+.ig{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;}
+@media(max-width:640px){.ig{grid-template-columns:1fr;}}
+.ic2{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:16px;}
+.ic2 h4{font-size:12px;font-weight:700;margin-bottom:5px;}
+.ic2 p{font-size:10.5px;color:var(--td);line-height:1.7;}
+.arr{color:var(--cyan);margin:0 2px;}
+.usage{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-top:16px;}
+.usage h3{font-size:14px;font-weight:700;margin-bottom:10px;color:var(--yellow);}
+.ui{font-size:11px;color:var(--tm);line-height:1.8;margin-bottom:5px;}
+.ui strong{color:var(--text);}
+</style>
+</head>
+<body>
+<div class="ctn">
+<div class="hd">
+<h1>電気施工管理 構造マップ v4（電気特化版）</h1>
+<p>電気施工管理に特化 ─ 資格別年収・求職者訴求・法人訴求・市場成長ドライバーを統合</p>
+</div>
+
+<div class="tabs">
+<div class="tab on" onclick="sw(0)">①経営課題ツリー</div>
+<div class="tab" onclick="sw(1)">②採用課題ツリー</div>
+<div class="tab" onclick="sw(2)">③経営ループ</div>
+<div class="tab" onclick="sw(3)">④採用ループ</div>
+<div class="tab" onclick="sw(4)">⑤前提・訴求</div>
+</div>
+
+<!-- ================================================================ -->
+<!-- TAB 1: 経営課題ツリー v3 -->
+<!-- ================================================================ -->
+<div class="tc on" id="t0">
+<div class="ctrl">
+<button class="cb" onclick="oA(0)">▶ すべて展開</button>
+<button class="cb" onclick="cA(0)">◀ 折りたたむ</button>
+</div>
+
+<!-- ===== 00 市場環境 (NEW) ===== -->
+<div class="sb"><div class="ic" style="background:rgba(248,113,113,.1);">🌍</div><div><h2>経営課題ロジックツリー</h2><div class="su">市場環境→事業構造→案件→組織→将来の5層で分解</div></div></div>
+
+<div class="t1 o">
+<div class="t1h" onclick="tg(this,'t1')">
+<div class="tn" style="background:rgba(248,113,113,.15);color:var(--red);">00</div>
+<div class="tt">市場環境・制度（業界のマクロ構造）</div>
+<div class="badge new">NEW</div>
+<div class="chv">▶</div>
+</div>
+<div class="t1c">
+
+<div class="t2 o">
+<div class="t2h" onclick="tg(this,'t2')"><span class="tg new">NEW</span><span class="t2t"><strong>業界の成長ドライバー（なぜ今伸びているか）</strong></span><span class="c2">▶</span></div>
+<div class="t2c">
+<div class="l3"><span class="g nw">理解必須：</span>施工管理業界は「政策・補助金・法改正」で案件量が決まる。市場を知らないと商談で浅くなる</div>
+<div class="l3"><span class="g ex">例(EV)：</span>2030年充電インフラ30万口目標。補助金460億（急速210/普通140）が案件の起点</div>
+<div class="l3"><span class="g ex">例(太陽光)：</span>PPA・オフサイト型が拡大。蓄電池案件が急増中。脱炭素で太陽光エネルギー需要拡大</div>
+<div class="l3"><span class="g ex">例(通信)：</span>テナント工事需要7割。DX・5G基地局整備が追い風</div>
+<div class="l3"><span class="g ex">電気施工管理の成長ドライバー：</span>都市開発で新築工事／脱炭素で太陽光／AIブームでデータセンター需要／半導体工場ニーズ増</div>
+<div class="l3"><span class="g q">💬：</span>「御社の事業領域で、今一番追い風になっている政策や制度は何ですか？」</div>
+</div>
+</div>
+
+<div class="t2">
+<div class="t2h" onclick="tg(this,'t2')"><span class="tg new">NEW</span><span class="t2t"><strong>補助金・政策目標の把握</strong></span><span class="c2">▶</span></div>
+<div class="t2c">
+<div class="l3"><span class="g pt">なぜ必要：</span>法人は補助金を前提に案件計画を立てている。RAがこれを知っていると「話が早い」</div>
+<div class="l3"><span class="g num">聞くべき：</span>補助金の活用比率、申請の採択率、補助金の上限レンジ感</div>
+<div class="l3"><span class="g q">💬：</span>「補助金を活用している案件の割合はどのくらいですか？」</div>
+<div class="l3"><span class="g q">💬：</span>「補助金の採択状況は安定していますか？ 不採択のリスクは？」</div>
+</div>
+</div>
+
+<div class="t2">
+<div class="t2h" onclick="tg(this,'t2')"><span class="tg new">NEW</span><span class="t2t"><strong>競合プレイヤーの見取り図</strong></span><span class="c2">▶</span></div>
+<div class="t2c">
+<div class="l3"><span class="g pt">なぜ必要：</span>法人の市場での立ち位置を理解するため。採用競合と事業競合は別</div>
+<div class="l3"><span class="g ex">例(EV)：</span>機器メーカー(ニチコン/東光高岳) vs ネットワーク(eMP/ENEOS) vs 一気通貫(TerraCharge)</div>
+<div class="l3"><span class="g q">💬：</span>「御社と市場で競合する会社はどこですか？ 採用で競合する会社とは違いますか？」</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- ===== 01 事業構造 (UPDATED) ===== -->
+<div class="t1">
+<div class="t1h" onclick="tg(this,'t1')">
+<div class="tn" style="background:rgba(251,191,36,.15);color:var(--yellow);">01</div>
+<div class="tt">事業構造・案件ポートフォリオ</div>
+<div class="badge upd">更新</div>
+<div class="chv">▶</div>
+</div>
+<div class="t1c">
+
+<div class="t2">
+<div class="t2h" onclick="tg(this,'t2')"><span class="tg new">NEW</span><span class="t2t"><strong>商流（バリューチェーン）における自社のポジション</strong></span><span class="c2">▶</span></div>
+<div class="t2c">
+<div class="l3"><span class="g nw">致命的に重要：</span>設計/製造/販売/施工/管理/保守のどこを担っているかで必要な人材が全く違う</div>
+<div class="l3"><span class="g ex">EV：</span>メーカー(製造+販売+保守) → 施工は協力会社。「電気工事士」を紹介してもポジション違い</div>
+<div class="l3"><span class="g ex">太陽光：</span>自社施工(産業系) / 協力業者経由(住宅系) / 下請けで入る場合 → 混在型</div>
+<div class="l3"><span class="g ex">通信：</span>コムテック=「施工そのもの」/ ディクス=「施工管理寄り」→ 同グループでも違う</div>
+<div class="l3"><span class="g q">💬：</span>「設計から施工・保守まで、御社はどの範囲をカバーされていますか？」</div>
+<div class="l3"><span class="g q">💬：</span>「協力会社は全国で何社くらいですか？ 指定工事店制ですか、都度手配ですか？」</div>
+</div>
+</div>
+
+<div class="t2">
+<div class="t2h" onclick="tg(this,'t2')"><span class="tg new">NEW</span><span class="t2t"><strong>グループ構造・M&A・親会社の影響</strong></span><span class="c2">▶</span></div>
+<div class="t2c">
+<div class="l3"><span class="g nw">業界トレンド：</span>施工管理業界はM&Aが活発。親会社の方針が待遇・文化・案件供給に直結</div>
+<div class="l3"><span class="g ex">太陽光：</span>「コムシス傘下 → 休みにうるさい → 実際に休めている」→ PRの根拠になる</div>
+<div class="l3"><span class="g ex">通信：</span>「昨年10月M&Aでグループ入り」→ 会社の位置づけ自体が変わっている</div>
+<div class="l3"><span class="g q">💬：</span>「グループ会社の構成は？ 親会社の方針で現場に影響していることはありますか？」</div>
+</div>
+</div>
+
+<div class="t2">
+<div class="t2h" onclick="tg(this,'t2')"><span class="tg new">NEW</span><span class="t2t"><strong>事業セグメント別の売上比率と優先順位</strong></span><span class="c2">▶</span></div>
+<div class="t2c">
+<div class="l3"><span class="g pt">なぜ必要：</span>施工管理会社は複数事業が混在。セグメント別に見ないと「どこに人を入れるべきか」がわからない</div>
+<div class="l3"><span class="g ex">太陽光：</span>住宅(屋根+土地)/産業/PPA/オフサイト/蓄電池/リフォーム/建設/土木 → 8セグメント</div>
+<div class="l3"><span class="g ex">通信：</span>テナント工事7割/大型新築2割（件数）だが金額はB工事:C工事=半々 → 件数と金額で構成が違う</div>
+<div class="l3"><span class="g q">💬：</span>「事業をセグメント別に分けると売上構成は？ 今後一番伸ばしたいのはどこですか？」</div>
+</div>
+</div>
+
+<div class="t2">
+<div class="t2h" onclick="tg(this,'t2')"><span class="tg new">NEW</span><span class="t2t"><strong>拠点別の事業構成・売上比率・人員配置</strong></span><span class="c2">▶</span></div>
+<div class="t2c">
+<div class="l3"><span class="g nw">重要：</span>拠点ごとに案件タイプ・人員構成・勤務スタイルが全く違う。全社で聞いても使えない</div>
+<div class="l3"><span class="g ex">太陽光：</span>浦安5-6割/名古屋2割/大阪福岡2割。福岡=産業多い。宮崎=土地のみ</div>
+<div class="l3"><span class="g ex">EV：</span>関東=千葉工場出社/関西=在宅起点で九州まで。勤務スタイルも違う</div>
+<div class="l3"><span class="g q">💬：</span>「拠点ごとの売上比率は？ 一番伸びているエリアと一番人が足りないエリアは？」</div>
+<div class="l3"><span class="g q">💬：</span>「拠点によって案件の種類は違いますか？ 人の配置はどう決めていますか？」</div>
+</div>
+</div>
+
+<div class="t2">
+<div class="t2h" onclick="tg(this,'t2')"><span class="tg data">要素</span><span class="t2t"><strong>元請 vs 下請の比率</strong></span><span class="c2">▶</span></div>
+<div class="t2c">
+<div class="l3"><span class="g pt">元請高い：</span>価格決定力あり→利益率高い→給与出せる→人集まる</div>
+<div class="l3"><span class="g wr">下請高い：</span>単価叩かれる→利益薄い→給与上げられない→人来ない</div>
+<div class="l3"><span class="g q">💬：</span>「元請と下請の比率は？ 今後元請を増やす計画はありますか？」</div>
+</div>
+</div>
+
+<div class="t2">
+<div class="t2h" onclick="tg(this,'t2')"><span class="tg data">要素</span><span class="t2t"><strong>予算規模 / 公共vs民間 / 新築vsリニューアル</strong></span><span class="c2">▶</span></div>
+<div class="t2c">
+<div class="l3"><span class="g num">予算規模：</span>大型(5億〜)は1級技士必須。中型(5000万〜5億)がボリュームゾーン。小型は利益薄い</div>
+<div class="l3"><span class="g num">公共/民間：</span>公共=安定だが利益率低め。民間=利益率高いが景気依存。候補者訴求が違う</div>
+<div class="l3"><span class="g num">新築/リニューアル：</span>リニューアル=夜間工事リスクあり確認必須。新築=スキル要件高い</div>
+<div class="l3"><span class="g q">💬：</span>「案件の平均規模は？ 公共と民間の比率は？ 新築とリニューアルの割合は？」</div>
+</div>
+</div>
+
+<div class="t2">
+<div class="t2h" onclick="tg(this,'t2')"><span class="tg data">要素</span><span class="t2t"><strong>事業領域（成長領域か）/ 案件選択力</strong></span><span class="c2">▶</span></div>
+<div class="t2c">
+<div class="l3"><span class="g pt">成長：</span>再エネ/DC/半導体/EV/ZEB。安定：ビル管理/公共インフラ更新。縮小：従来住宅新築</div>
+<div class="l3"><span class="g pt">選べる会社：</span>指名で受注→高利益案件に集中→社員WLB守れる。選べない=人不足の証拠</div>
+<div class="l3"><span class="g q">💬：</span>「案件はある程度選べる状態ですか？ 利益率の低い案件も断れない状況ですか？」</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- ===== 02 売上の壁 ===== -->
+<div class="t1">
+<div class="t1h" onclick="tg(this,'t1')">
+<div class="tn" style="background:rgba(248,113,113,.15);color:var(--red);">02</div>
+<div class="tt">売上が伸びない / 案件を取れない</div>
+<div class="chv">▶</div>
+</div>
+<div class="t1c">
+<div class="t2"><div class="t2h" onclick="tg(this,'t2')"><span class="tg cause">原因</span><span class="t2t"><strong>人が足りなくて案件を受けられない</strong></span><span class="c2">▶</span></div>
+<div class="t2c">
+<div class="l3"><span class="g wr">悪循環：</span>断る→元請の信頼低下→次の案件が来なくなる</div>
+<div class="l3"><span class="g q">💬：</span>「直近1年で人が足りなくて断った案件は？ 金額にすると機会損失いくらですか？」</div>
+</div></div>
+<div class="t2"><div class="t2h" onclick="tg(this,'t2')"><span class="tg cause">原因</span><span class="t2t"><strong>資格者不足で大型・公共案件に参入できない</strong></span><span class="c2">▶</span></div>
+<div class="t2c">
+<div class="l3"><span class="g num">構造：</span>1級技士の数=受注上限。公共は配置義務あり</div>
+<div class="l3"><span class="g q">💬：</span>「1級・2級保有者は何名？ あと何名で目標の案件規模に入れますか？」</div>
+</div></div>
+<div class="t2"><div class="t2h" onclick="tg(this,'t2')"><span class="tg cause">原因</span><span class="t2t"><strong>取引先偏り / 営業力不足</strong></span><span class="c2">▶</span></div>
+<div class="t2c">
+<div class="l3"><span class="g q">💬：</span>「継続取引先は何社？ 特定の取引先への依存度は？」</div>
+</div></div>
+</div>
+</div>
+
+<!-- ===== 03 利益率の壁 ===== -->
+<div class="t1">
+<div class="t1h" onclick="tg(this,'t1')">
+<div class="tn" style="background:rgba(255,140,66,.15);color:var(--orange);">03</div>
+<div class="tt">利益率が上がらない</div>
+<div class="chv">▶</div>
+</div>
+<div class="t1c">
+<div class="t2"><div class="t2h" onclick="tg(this,'t2')"><span class="tg cause">原因</span><span class="t2t"><strong>下請比率が高く単価決定力がない</strong></span><span class="c2">▶</span></div>
+<div class="t2c"><div class="l3"><span class="g wr">構造：</span>下請→叩かれる→人件費上昇に耐えられない→給与据置→離職</div></div></div>
+<div class="t2"><div class="t2h" onclick="tg(this,'t2')"><span class="tg cause">原因</span><span class="t2t"><strong>工期遅延・手戻りによるコスト増</strong></span><span class="c2">▶</span></div>
+<div class="t2c"><div class="l3"><span class="g pt">逆：</span>経験者1名の採用=工期遅延リスク大幅減=採用は「投資」</div></div></div>
+<div class="t2"><div class="t2h" onclick="tg(this,'t2')"><span class="tg cause">原因</span><span class="t2t"><strong>案件を選べず薄利案件も受けている</strong></span><span class="c2">▶</span></div>
+<div class="t2c"><div class="l3"><span class="g pt">好循環：</span>人充足→案件選べる→高利益案件集中→給与UP→さらに採れる</div></div></div>
+</div>
+</div>
+
+<!-- ===== 04 組織の壁 ===== -->
+<div class="t1">
+<div class="t1h" onclick="tg(this,'t1')">
+<div class="tn" style="background:rgba(167,139,250,.15);color:var(--purple);">04</div>
+<div class="tt">組織が脆い / 属人化</div>
+<div class="chv">▶</div>
+</div>
+<div class="t1c">
+<div class="t2"><div class="t2h" onclick="tg(this,'t2')"><span class="tg cause">原因</span><span class="t2t"><strong>ベテラン依存。5〜10年で大量退職リスク</strong></span><span class="c2">▶</span></div>
+<div class="t2c"><div class="l3"><span class="g q">💬：</span>「年齢構成は？ 5年後に層が薄くなる世代はありますか？」</div></div></div>
+<div class="t2"><div class="t2h" onclick="tg(this,'t2')"><span class="tg cause">原因</span><span class="t2t"><strong>中間管理職（現場所長クラス）が不足</strong></span><span class="c2">▶</span></div>
+<div class="t2c"><div class="l3"><span class="g q">💬：</span>「社長が現場に出る頻度は？ 現場を任せられる方は何名？」</div></div></div>
+<div class="t2"><div class="t2h" onclick="tg(this,'t2')"><span class="tg cause">原因</span><span class="t2t"><strong>教育体制が仕組み化されていない</strong></span><span class="c2">▶</span></div>
+<div class="t2c"><div class="l3"><span class="g wr">結果：</span>未経験者育たない→辞める→「未経験ダメ」の誤った学習→経験者しか採らない→さらに採れない</div></div></div>
+</div>
+</div>
+
+<!-- ===== 05 将来の壁 ===== -->
+<div class="t1">
+<div class="t1h" onclick="tg(this,'t1')">
+<div class="tn" style="background:rgba(52,211,153,.15);color:var(--green);">05</div>
+<div class="tt">将来の成長戦略が描けない</div>
+<div class="chv">▶</div>
+</div>
+<div class="t1c">
+<div class="t2"><div class="t2h" onclick="tg(this,'t2')"><span class="tg cause">原因</span><span class="t2t"><strong>成長領域に進出したいが人材がいない</strong></span><span class="c2">▶</span></div>
+<div class="t2c"><div class="l3"><span class="g q">💬：</span>「今後伸ばしたい分野は？ そこに必要な人材像と充足度は？」</div></div></div>
+<div class="t2"><div class="t2h" onclick="tg(this,'t2')"><span class="tg cause">原因</span><span class="t2t"><strong>2024年問題（残業上限規制）で人員必要</strong></span><span class="c2">▶</span></div>
+<div class="t2c"><div class="l3"><span class="g q">💬：</span>「残業上限規制への対応はどこまで？ 人員計画への影響は？」</div></div></div>
+</div>
+</div>
+
+</div>
+
+<!-- ================================================================ -->
+<!-- TAB 2: 採用課題ツリー v3 -->
+<!-- ================================================================ -->
+<div class="tc" id="t1">
+<div class="ctrl">
+<button class="cb" onclick="oA(1)">▶ すべて展開</button>
+<button class="cb" onclick="cA(1)">◀ 折りたたむ</button>
+</div>
+<div class="sb"><div class="ic" style="background:rgba(74,142,255,.1);">👥</div><div><h2>人事・採用課題ツリー</h2><div class="su">「採れない / 辞める / 育たない」＋ 採用チャネル・PRポイント・料率を統合</div></div></div>
+
+<!-- A. 採れない -->
+<div class="t1 o">
+<div class="t1h" onclick="tg(this,'t1')">
+<div class="tn" style="background:rgba(248,113,113,.15);color:var(--red);">A</div>
+<div class="tt">採れない（母集団 / 選考 / 承諾）</div>
+<div class="chv">▶</div>
+</div>
+<div class="t1c">
+
+<div class="t2 o">
+<div class="t2h" onclick="tg(this,'t2')"><span class="tg new">NEW</span><span class="t2t"><strong>採用チャネル戦略の把握</strong></span><span class="c2">▶</span></div>
+<div class="t2c">
+<div class="l3"><span class="g nw">致命的に重要：</span>自社の差別化ポジションを取るためにここを知る必要がある</div>
+<div class="l3"><span class="g ex">太陽光：</span>紹介会社2桁/媒体は中央エリアで条件負け/スカウトはリソース不足で未使用/紹介を数で増やしたい</div>
+<div class="l3"><span class="g q">💬：</span>「現在何社くらいの紹介会社さんとお付き合いが？」</div>
+<div class="l3"><span class="g q">💬：</span>「媒体と紹介で、実際に決まっているのはどちらが多いですか？」</div>
+<div class="l3"><span class="g q">💬：</span>「紹介会社を選ぶ基準は？ 量ですか、質ですか、スピードですか？」</div>
+<div class="l3"><span class="g q">💬：</span>「エリアによってチャネルの有効性は違いますか？」</div>
+</div>
+</div>
+
+<div class="t2">
+<div class="t2h" onclick="tg(this,'t2')"><span class="tg issue">課題</span><span class="t2t"><strong>経験者が採れない</strong></span><span class="c2">▶</span></div>
+<div class="t2c">
+<div class="l3"><span class="g wr">原因：</span>市場に出回らない/年収で大手に負ける/中小のメリットを伝えられていない</div>
+<div class="l3"><span class="g pt">訴求の鍵：</span>年収以外 ─ 裁量/転勤なし/通勤圏/ポジション/社長との距離</div>
+<div class="l3"><span class="g q">💬：</span>「経験者の辞退理由で多いものは？ 条件で負けたケースは？」</div>
+</div>
+</div>
+
+<div class="t2">
+<div class="t2h" onclick="tg(this,'t2')"><span class="tg issue">課題</span><span class="t2t"><strong>未経験者が集まらない / 質が低い</strong></span><span class="c2">▶</span></div>
+<div class="t2c">
+<div class="l3"><span class="g wr">原因：</span>施工管理の認知度低い/「きつそう」イメージ/他業種と未経験者の奪い合い</div>
+<div class="l3"><span class="g pt">訴求の鍵：</span>「未経験→3年で資格→年収500万」のリアルストーリー＋教育体制</div>
+</div>
+</div>
+
+<div class="t2">
+<div class="t2h" onclick="tg(this,'t2')"><span class="tg new">NEW</span><span class="t2t"><strong>年齢×資格×経験の採用パスマトリクス（電気施工管理）</strong></span><span class="c2">▶</span></div>
+<div class="t2c">
+<div class="l3"><span class="g nw">前提：</span>全員「電気施工管理」として紹介。資格は無資格/電気工事士1種・2種/電気施工管理1級・2級を主に扱う</div>
+<div class="l3"><span class="g num">年収レンジ：</span>未経験無資格→400万で紹介しやすい（相場350-400）／施工管理未経験+電工2種→350-450／施工管理未経験+電工1種→500-600／施工管理資格あり→500-600／施工管理経験豊富→600~</div>
+<div class="l3"><span class="g wr">年齢制約：</span>電気施工管理は未経験だと35超えるとほぼ転職不可。40超えると体力的にもきつい</div>
+<div class="l3"><span class="g ex">太陽光：</span>未経験40代まで→2種あれば50代OK/資格なし40代NG/資格なし経験ありは料率で判断変わる</div>
+<div class="l3"><span class="g ex">EV：</span>40代まで現実的。50代は新技術適応で落ちた。電気工事経験あればOK</div>
+<div class="l3"><span class="g q">💬：</span>「30代で2種持ち経験ありだと年収は？ 逆に40代未経験だとどうなりますか？」</div>
+<div class="l3"><span class="g q">💬：</span>「書類で絶対NGのラインは？ 年齢？資格？転職回数？」</div>
+</div>
+</div>
+
+<div class="t2">
+<div class="t2h" onclick="tg(this,'t2')"><span class="tg issue">課題</span><span class="t2t"><strong>選考が遅い / 面接で落としすぎ</strong></span><span class="c2">▶</span></div>
+<div class="t2c">
+<div class="l3"><span class="g wr">選考速度：</span>面接→内定2週間以上→他社に決まる</div>
+<div class="l3"><span class="g q">💬：</span>「書類通過率・面接通過率は？ 不採用理由で最も多いものは？」</div>
+</div>
+</div>
+
+<div class="t2">
+<div class="t2h" onclick="tg(this,'t2')"><span class="tg new">NEW</span><span class="t2t"><strong>選考通過率の実態数字</strong></span><span class="c2">▶</span></div>
+<div class="t2c">
+<div class="l3"><span class="g ex">太陽光：</span>「面接まで基本1-2割しか断らない」→ 書類通過率8-9割。門戸広い</div>
+<div class="l3"><span class="g pt">使い方：</span>通過率が高い会社 → 候補者に「通りやすいですよ」と伝える材料。推薦の優先順位判断にも</div>
+<div class="l3"><span class="g q">💬：</span>「直近半年で紹介経由の書類通過率は？ 面接で落とす割合は？ 落とす理由Top3は？」</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- A2. PRポイント (NEW) -->
+<div class="t1">
+<div class="t1h" onclick="tg(this,'t1')">
+<div class="tn" style="background:rgba(52,211,153,.15);color:var(--green);">PR</div>
+<div class="tt">PRポイント（候補者に刺さる差別化要素）</div>
+<div class="badge new">NEW</div>
+<div class="chv">▶</div>
+</div>
+<div class="t1c">
+
+<div class="t2">
+<div class="t2h" onclick="tg(this,'t2')"><span class="tg hear">聞く</span><span class="t2t"><strong>求職者への訴求ポイント（電気施工管理）</strong></span><span class="c2">▶</span></div>
+<div class="t2c">
+<div class="l3"><span class="g pt">キャリア：</span>未経験でも電気施工管理できる／電気工事士から脱却して施工管理へ／独立時に元請けコネで自分が動かなくてよい</div>
+<div class="l3"><span class="g pt">収入・成長：</span>伸びているマーケットで3~5年で年収600-800／大手残業多めだと800万初手も</div>
+<div class="l3"><span class="g pt">働き方：</span>おもに未経験者向け、ルーティンで早く仕事を身につけられる／未経験で育ててくれる会社は丁寧</div>
+<div class="l3"><span class="g pt">将来性：</span>AIに代替されづらい職業／都市開発・太陽光・データセンター・半導体でニーズ増</div>
+<div class="l3"><span class="g wr">注意：</span>体力的に40超えるときつい／未経験35超で転職ほぼ不可</div>
+<div class="l3"><span class="g q">💬：</span>「最近入社された方は、どんなところを評価して御社を選ばれましたか？」</div>
+</div>
+</div>
+
+<div class="t2">
+<div class="t2h" onclick="tg(this,'t2')"><span class="tg hear">聞く</span><span class="t2t"><strong>法人への訴求ポイント</strong></span><span class="c2">▶</span></div>
+<div class="t2c">
+<div class="l3"><span class="g nw">採用ROI：</span>採用できたら1億以上入るケースが多い。1名の採用コストに1000万払ってもペイする。200%でやってるところもある</div>
+<div class="l3"><span class="g wr">緊急性：</span>欠員はすぐに充足させないと、他のスタッフに負担増→離職が加速してしまう</div>
+<div class="l3"><span class="g q">💬：</span>「1名採用できた場合の売上貢献は？ 欠員1名の機会損失は？」</div>
+</div>
+</div>
+
+<div class="t2">
+<div class="t2h" onclick="tg(this,'t2')"><span class="tg hear">聞く</span><span class="t2t"><strong>法人自身が認識しているPR要素</strong></span><span class="c2">▶</span></div>
+<div class="t2c">
+<div class="l3"><span class="g ex">太陽光：</span>年休125日+5日強制/完全週休2日(親会社が厳しい)/掛け持ちなし=1現場集中/残業きっちり支給/協力業者2-3社で少ない</div>
+<div class="l3"><span class="g ex">通信：</span>「オフィス内工事→暑さ寒さなし」「運用中環境の工事が中心」</div>
+<div class="l3"><span class="g ex">EV：</span>「EV市場の将来性」「メーカーのFE=希少なキャリア」</div>
+<div class="l3"><span class="g q">💬：</span>「同業他社と比較した時に、御社が一番勝てるポイントは？」</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- B. 辞める -->
+<div class="t1">
+<div class="t1h" onclick="tg(this,'t1')">
+<div class="tn" style="background:rgba(255,140,66,.15);color:var(--orange);">B</div>
+<div class="tt">辞める（早期離職 / 定着率）</div>
+<div class="chv">▶</div>
+</div>
+<div class="t1c">
+<div class="t2"><div class="t2h" onclick="tg(this,'t2')"><span class="tg issue">課題</span><span class="t2t"><strong>入社3ヶ月以内の早期離職（未経験に多い）</strong></span><span class="c2">▶</span></div>
+<div class="t2c">
+<div class="l3"><span class="g wr">原因：</span>入社前と実態のギャップ/受入体制なし/体育会系文化への不適応</div>
+<div class="l3"><span class="g q">💬：</span>「直近1年の早期離職は何名？ 理由は？ 受入初日の流れは？」</div>
+</div></div>
+<div class="t2"><div class="t2h" onclick="tg(this,'t2')"><span class="tg issue">課題</span><span class="t2t"><strong>3年以内の中期離職（経験者に多い）</strong></span><span class="c2">▶</span></div>
+<div class="t2c">
+<div class="l3"><span class="g wr">原因：</span>キャリアパス不透明/WLB悪化/資格取得後の踏み台離職</div>
+<div class="l3"><span class="g q">💬：</span>「退職理由で一番多いものは？ 資格取って辞めるケースは？」</div>
+</div></div>
+<div class="t2"><div class="t2h" onclick="tg(this,'t2')"><span class="tg connect">接続</span><span class="t2t"><strong>離職1名=推定200〜300万の損失 → 連鎖離職リスク</strong></span><span class="c2">▶</span></div>
+<div class="t2c"><div class="l3"><span class="g num">内訳：</span>採用費(50-100万)+教育コスト+穴埋め残業+再採用費。残った人に負荷→その人も辞める</div><div class="l3"><span class="g nw">逆算：</span>採用できたら1億以上入るケースも。1名1000万払ってもペイする。欠員放置→離職加速</div></div></div></div>
+</div>
+</div>
+
+<!-- C. 育たない -->
+<div class="t1">
+<div class="t1h" onclick="tg(this,'t1')">
+<div class="tn" style="background:rgba(74,142,255,.15);color:var(--blue);">C</div>
+<div class="tt">育たない（戦力化 / 資格取得）</div>
+<div class="chv">▶</div>
+</div>
+<div class="t1c">
+<div class="t2"><div class="t2h" onclick="tg(this,'t2')"><span class="tg issue">課題</span><span class="t2t"><strong>育成に時間をかける余裕がない</strong></span><span class="c2">▶</span></div>
+<div class="t2c">
+<div class="l3"><span class="g wr">構造：</span>人不足→即戦力投入→教える暇なし→未経験者放置→辞める</div>
+<div class="l3"><span class="g pt">好循環：</span>早めに採用→余裕ある時期に教育→繁忙期に戦力化済み→負荷軽減</div>
+<div class="l3"><span class="g q">💬：</span>「今新人を教える余裕はありますか？ 閑散期はいつ頃ですか？」</div>
+</div></div>
+<div class="t2"><div class="t2h" onclick="tg(this,'t2')"><span class="tg issue">課題</span><span class="t2t"><strong>資格取得が進まない</strong></span><span class="c2">▶</span></div>
+<div class="t2c">
+<div class="l3"><span class="g pt">優良企業：</span>受験費負担+勉強時間確保+合格祝金+資格手当→最強の訴求材料</div>
+<div class="l3"><span class="g q">💬：</span>「資格取得支援は？ 直近の合格実績は？ 取得後の給与変化は？」</div>
+</div></div>
+</div>
+</div>
+
+<!-- D. 料率 (NEW) -->
+<div class="t1">
+<div class="t1h" onclick="tg(this,'t1')">
+<div class="tn" style="background:rgba(244,114,182,.15);color:var(--pink);">D</div>
+<div class="tt">料率・条件（ビジネスとしての交渉）</div>
+<div class="badge new">NEW</div>
+<div class="chv">▶</div>
+</div>
+<div class="t1c">
+<div class="t2">
+<div class="t2h" onclick="tg(this,'t2')"><span class="tg new">NEW</span><span class="t2t"><strong>料率の相場感と交渉余地</strong></span><span class="c2">▶</span></div>
+<div class="t2c">
+<div class="l3"><span class="g nw">重要：</span>料率は「求人の難易度」と紐づけて交渉するのが王道</div>
+<div class="l3"><span class="g ex">太陽光：</span>低30%〜高50-60%。求人ごとに変動。「今後も上げれそう」</div>
+<div class="l3"><span class="g ex">太陽光：</span>「資格なし経験ありは面接まで見る（料率により通過率変わる）」→ 料率が選考基準にまで影響</div>
+<div class="l3"><span class="g q">💬：</span>「現在の料率は？ 求人の難易度によって変動はありますか？」</div>
+<div class="l3"><span class="g q">💬：</span>「難易度の高いポジション（1級技士等）は料率の上乗せは可能ですか？」</div>
+</div>
+</div>
+<div class="t2">
+<div class="t2h" onclick="tg(this,'t2')"><span class="tg new">NEW</span><span class="t2t"><strong>保守KPI・SLA（サービス系職種の場合）</strong></span><span class="c2">▶</span></div>
+<div class="t2c">
+<div class="l3"><span class="g ex">EV：</span>初動○時間以内/1人あたり担当口数/月あたり故障件数Top5</div>
+<div class="l3"><span class="g q">💬：</span>「保守のSLAは？ 1人あたりの担当エリアや件数は？」</div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+<!-- ================================================================ -->
+<!-- TAB 3: 経営システムループ v3 -->
+<!-- ================================================================ -->
+<div class="tc" id="t2">
+<div class="lw">
+<div class="lt">経営システムループ v3</div>
+<div class="ls">市場環境レイヤーを最上位に追加。商流ポジション→案件ポートフォリオ→経営サイクルの全体像</div>
+
+<svg viewBox="0 0 820 720" width="100%" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="a1" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#4a6a90"/></marker>
+<marker id="ar" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#f87171"/></marker>
+<marker id="ag" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#34d399"/></marker>
+<filter id="gl"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+
+<!-- Market Environment (TOP - NEW) -->
+<rect x="200" y="10" width="420" height="55" rx="14" fill="rgba(248,113,113,0.06)" stroke="#f87171" stroke-width="2" filter="url(#gl)"/>
+<text x="410" y="30" text-anchor="middle" fill="#f87171" font-size="10" font-weight="700">★ NEW：市場環境レイヤー</text>
+<text x="410" y="48" text-anchor="middle" fill="#e2e4eb" font-size="12" font-weight="700">政策・補助金・法改正・業界トレンド</text>
+
+<!-- Value Chain (NEW) -->
+<rect x="30" y="90" width="220" height="50" rx="12" fill="rgba(167,139,250,0.06)" stroke="#a78bfa" stroke-width="1.5"/>
+<text x="140" y="108" text-anchor="middle" fill="#a78bfa" font-size="9" font-weight="700">NEW：商流ポジション</text>
+<text x="140" y="126" text-anchor="middle" fill="#e2e4eb" font-size="12" font-weight="700">バリューチェーン上の役割</text>
+
+<!-- Portfolio -->
+<rect x="300" y="90" width="220" height="50" rx="12" fill="rgba(251,191,36,0.06)" stroke="rgba(251,191,36,0.4)" stroke-width="1.5"/>
+<text x="410" y="108" text-anchor="middle" fill="#fbbf24" font-size="9" font-weight="700">案件ポートフォリオ（6要素+拠点）</text>
+<text x="410" y="126" text-anchor="middle" fill="#a0a5bb" font-size="9">元請/下請・規模・公共/民間・新築/改修・領域・選択力</text>
+
+<!-- Group Structure (NEW) -->
+<rect x="570" y="90" width="220" height="50" rx="12" fill="rgba(255,140,66,0.06)" stroke="#ff8c42" stroke-width="1.5"/>
+<text x="680" y="108" text-anchor="middle" fill="#ff8c42" font-size="9" font-weight="700">NEW：グループ構造</text>
+<text x="680" y="126" text-anchor="middle" fill="#e2e4eb" font-size="12" font-weight="700">親会社・M&A・資本関係</text>
+
+<!-- Arrows from market -->
+<path d="M310,65 L200,90" stroke="#f87171" stroke-width="1.5" marker-end="url(#a1)" fill="none"/>
+<path d="M410,65 L410,86" stroke="#f87171" stroke-width="1.5" marker-end="url(#a1)" fill="none"/>
+<path d="M510,65 L620,90" stroke="#f87171" stroke-width="1.5" marker-end="url(#a1)" fill="none"/>
+
+<!-- 案件受注力 -->
+<rect x="300" y="180" width="200" height="48" rx="12" fill="#1a1e2a" stroke="#2a3045"/>
+<text x="400" y="200" text-anchor="middle" fill="#a0a5bb" font-size="9">経営</text>
+<text x="400" y="216" text-anchor="middle" fill="#e2e4eb" font-size="12" font-weight="700">案件の受注力</text>
+
+<!-- 売上利益 -->
+<rect x="600" y="270" width="180" height="48" rx="12" fill="#1a2218" stroke="#34d399" stroke-width="1.5"/>
+<text x="690" y="290" text-anchor="middle" fill="#34d399" font-size="9">成果</text>
+<text x="690" y="306" text-anchor="middle" fill="#e2e4eb" font-size="12" font-weight="700">売上 / 利益</text>
+
+<!-- 給与条件 -->
+<rect x="610" y="380" width="170" height="48" rx="12" fill="#1a1e2a" stroke="#2a3045"/>
+<text x="695" y="400" text-anchor="middle" fill="#a0a5bb" font-size="9">経営→人事</text>
+<text x="695" y="416" text-anchor="middle" fill="#e2e4eb" font-size="12" font-weight="700">出せる給与・条件</text>
+
+<!-- 案件選択力 -->
+<rect x="20" y="270" width="170" height="48" rx="12" fill="rgba(251,191,36,0.06)" stroke="rgba(251,191,36,0.4)"/>
+<text x="105" y="290" text-anchor="middle" fill="#fbbf24" font-size="9">交渉力</text>
+<text x="105" y="306" text-anchor="middle" fill="#e2e4eb" font-size="12" font-weight="700">案件を選べる</text>
+
+<!-- 技術力 -->
+<rect x="20" y="380" width="170" height="48" rx="12" fill="#1a1e2a" stroke="#2a3045"/>
+<text x="105" y="400" text-anchor="middle" fill="#a0a5bb" font-size="9">組織</text>
+<text x="105" y="416" text-anchor="middle" fill="#e2e4eb" font-size="12" font-weight="700">技術力 / 品質</text>
+
+<!-- 評判 (NEW) -->
+<rect x="20" y="490" width="170" height="48" rx="12" fill="rgba(34,211,238,0.06)" stroke="#22d3ee" stroke-width="1.5"/>
+<text x="105" y="508" text-anchor="middle" fill="#22d3ee" font-size="9" font-weight="700">NEW</text>
+<text x="105" y="524" text-anchor="middle" fill="#e2e4eb" font-size="12" font-weight="700">業界評判・ブランド</text>
+
+<!-- 採用力 -->
+<rect x="420" y="510" width="180" height="48" rx="12" fill="#131828" stroke="#4a8eff" stroke-width="2" filter="url(#gl)"/>
+<text x="510" y="528" text-anchor="middle" fill="#4a8eff" font-size="9" font-weight="700">★ RA介入点</text>
+<text x="510" y="546" text-anchor="middle" fill="#e2e4eb" font-size="12" font-weight="700">採用力（質×量×速度）</text>
+
+<!-- 人材充足 -->
+<rect x="220" y="620" width="200" height="48" rx="12" fill="#1e1228" stroke="#f87171" stroke-width="2" filter="url(#gl)"/>
+<text x="320" y="638" text-anchor="middle" fill="#f87171" font-size="9" font-weight="700">★ ボトルネック</text>
+<text x="320" y="656" text-anchor="middle" fill="#e2e4eb" font-size="12" font-weight="700">人材の充足度</text>
+
+<!-- 定着育成 -->
+<rect x="220" y="510" width="170" height="48" rx="12" fill="#1a1e2a" stroke="#ff8c42" stroke-width="1.5"/>
+<text x="305" y="528" text-anchor="middle" fill="#ff8c42" font-size="9">人事</text>
+<text x="305" y="546" text-anchor="middle" fill="#e2e4eb" font-size="12" font-weight="700">定着 / 育成</text>
+
+<!-- Arrows: positive -->
+<path d="M140,140 L340,180" stroke="#4a6a90" stroke-width="1" marker-end="url(#a1)" fill="none"/>
+<path d="M410,140 L400,176" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#a1)" fill="none"/>
+<path d="M680,140 L700,266" stroke="#4a6a90" stroke-width="1" marker-end="url(#a1)" fill="none"/>
+<path d="M500,204 L610,280" stroke="#4a6a90" stroke-width="1.5" marker-end="url(#a1)" fill="none"/>
+<path d="M695,318 L695,376" stroke="#34d399" stroke-width="2" marker-end="url(#ag)" fill="none"/>
+<text x="710" y="352" fill="#34d399" font-size="8" font-weight="600">利益→条件UP</text>
+<path d="M680,428 L550,510" stroke="#34d399" stroke-width="1.5" marker-end="url(#ag)" fill="none"/>
+<path d="M450,558 L380,620" stroke="#4a6a90" stroke-width="1.5" marker-end="url(#a1)" fill="none"/>
+<path d="M280,620 L305,562" stroke="#4a6a90" stroke-width="1.5" marker-end="url(#a1)" fill="none"/>
+<path d="M105,428 L105,486" stroke="#4a6a90" stroke-width="1.5" marker-end="url(#a1)" fill="none"/>
+<text x="70" y="460" fill="#a0a5bb" font-size="8">技術→評判</text>
+<path d="M105,380 L105,322" stroke="#4a6a90" stroke-width="1.5" marker-end="url(#a1)" fill="none"/>
+<path d="M160,270 L300,210" stroke="#4a6a90" stroke-width="1.5" marker-end="url(#a1)" fill="none"/>
+<path d="M190,294 L600,284" stroke="#34d399" stroke-width="1.5" marker-end="url(#ag)" fill="none" stroke-dasharray="5,3"/>
+<text x="390" y="280" fill="#34d399" font-size="8" font-weight="600">選べる→高利益案件に集中</text>
+
+<!-- NEW: 評判→採用力 -->
+<path d="M190,520 L416,530" stroke="#22d3ee" stroke-width="2" marker-end="url(#a1)" fill="none"/>
+<text x="290" y="510" fill="#22d3ee" font-size="8" font-weight="600">好評判→採用しやすく</text>
+
+<!-- Negative -->
+<path d="M260,640 Q50,580 310,210" stroke="#f87171" stroke-width="2" marker-end="url(#ar)" fill="none" stroke-dasharray="6,3" opacity="0.6"/>
+<text x="100" y="440" fill="#f87171" font-size="9" font-weight="700" opacity="0.7">人不足→断る</text>
+</svg>
+</div>
+
+<div class="ig">
+<div class="ic2">
+<h4 style="color:var(--red);">v2→v3 の追加ポイント</h4>
+<p><strong>①市場環境レイヤー：</strong>ループの最上位に配置。政策・補助金が全ての起点。<br><strong>②商流ポジション：</strong>バリューチェーン上の役割がポートフォリオの前提になる。<br><strong>③グループ構造：</strong>親会社の影響が条件・案件供給に直結。<br><strong>④評判ノード：</strong>技術力→評判→採用力のパスを新設。悪循環でも好循環でも効く。</p>
+</div>
+<div class="ic2">
+<h4 style="color:var(--green);">商談での読み方</h4>
+<p>上から下に読む：<br>市場は追い風か？ <span class="arr">→</span> この会社の商流ポジションは？ <span class="arr">→</span> 案件はどんな構成？ <span class="arr">→</span> 人は足りてる？ <span class="arr">→</span> ループのどこで詰まっている？<br><br>この5段階で法人の全体像が掴める。1問ずつ聞く必要はない。相手の回答から「ここだな」と当てはめる。</p>
+</div>
+</div>
+</div>
+
+<!-- ================================================================ -->
+<!-- TAB 4: 採用システムループ v3 -->
+<!-- ================================================================ -->
+<div class="tc" id="t3">
+<div class="lw">
+<div class="lt">採用システムループ v3</div>
+<div class="ls">採用チャネル・PRポイント・評判フィードバック・料率の要素を追加</div>
+
+<svg viewBox="0 0 820 820" width="100%" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="b1" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#4a6a90"/></marker>
+<marker id="br" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#f87171"/></marker>
+<marker id="bg2" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#34d399"/></marker>
+<filter id="gl2"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+
+<!-- 採用チャネル (NEW - TOP) -->
+<rect x="260" y="10" width="300" height="48" rx="12" fill="rgba(244,114,182,0.06)" stroke="#f472b6" stroke-width="2" filter="url(#gl2)"/>
+<text x="410" y="28" text-anchor="middle" fill="#f472b6" font-size="9" font-weight="700">NEW：採用チャネル選択</text>
+<text x="410" y="46" text-anchor="middle" fill="#e2e4eb" font-size="11" font-weight="700">媒体 / 紹介 / スカウト（エリア別に有効性が違う）</text>
+
+<!-- 2ルート -->
+<text x="410" y="82" text-anchor="middle" fill="#4a8eff" font-size="12" font-weight="900">採用 2ルート</text>
+
+<rect x="80" y="95" width="190" height="46" rx="12" fill="rgba(167,139,250,0.08)" stroke="#a78bfa" stroke-width="1.5"/>
+<text x="175" y="113" text-anchor="middle" fill="#a78bfa" font-size="9" font-weight="700">ルートA</text>
+<text x="175" y="130" text-anchor="middle" fill="#e2e4eb" font-size="12" font-weight="700">経験者を採用</text>
+
+<rect x="550" y="95" width="190" height="46" rx="12" fill="rgba(34,211,238,0.08)" stroke="#22d3ee" stroke-width="1.5"/>
+<text x="645" y="113" text-anchor="middle" fill="#22d3ee" font-size="9" font-weight="700">ルートB</text>
+<text x="645" y="130" text-anchor="middle" fill="#e2e4eb" font-size="12" font-weight="700">未経験者を採用</text>
+
+<!-- Arrows from channel -->
+<path d="M340,58 L215,95" stroke="#f472b6" stroke-width="1.5" marker-end="url(#b1)" fill="none"/>
+<path d="M480,58 L610,95" stroke="#f472b6" stroke-width="1.5" marker-end="url(#b1)" fill="none"/>
+
+<!-- パスマトリクス (NEW) -->
+<rect x="40" y="170" width="210" height="38" rx="8" fill="rgba(255,140,66,0.06)" stroke="rgba(255,140,66,0.25)"/>
+<text x="145" y="194" text-anchor="middle" fill="#ff8c42" font-size="10" font-weight="600">NEW：年齢×資格×経験で判断</text>
+<path d="M175,141 L155,166" stroke="#a78bfa" stroke-width="1" marker-end="url(#b1)" fill="none"/>
+
+<rect x="530" y="170" width="210" height="38" rx="8" fill="rgba(34,211,238,0.06)" stroke="rgba(34,211,238,0.25)"/>
+<text x="635" y="188" text-anchor="middle" fill="#22d3ee" font-size="10" font-weight="600">育成期間（6ヶ月〜2年）</text>
+<path d="M645,141 L640,166" stroke="#22d3ee" stroke-width="1" marker-end="url(#b1)" fill="none"/>
+
+<!-- 人材充足 -->
+<rect x="280" y="250" width="210" height="50" rx="12" fill="#131828" stroke="#4a8eff" stroke-width="2" filter="url(#gl2)"/>
+<text x="385" y="270" text-anchor="middle" fill="#4a8eff" font-size="9" font-weight="700">★ 人材の充足度</text>
+<text x="385" y="288" text-anchor="middle" fill="#e2e4eb" font-size="12" font-weight="700">現場を回せる状態</text>
+<path d="M185,208 L310,250" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#b1)" fill="none"/>
+<path d="M585,208 L460,250" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#b1)" fill="none"/>
+
+<!-- 分岐 -->
+<rect x="305" y="320" width="160" height="28" rx="7" fill="rgba(251,191,36,0.08)" stroke="rgba(251,191,36,0.3)" stroke-dasharray="3,2"/>
+<text x="385" y="338" text-anchor="middle" fill="#fbbf24" font-size="10" font-weight="700">← 悪循環 ｜ 好循環 →</text>
+
+<!-- ===== 好循環 RIGHT ===== -->
+<text x="660" y="360" fill="#34d399" font-size="12" font-weight="900">好循環 🟢</text>
+
+<rect x="560" y="370" width="230" height="40" rx="10" fill="rgba(52,211,153,0.06)" stroke="rgba(52,211,153,0.25)"/>
+<text x="675" y="394" text-anchor="middle" fill="#34d399" font-size="11" font-weight="600">余裕を持って戦力化できる</text>
+<path d="M480,300 L570,380" stroke="#34d399" stroke-width="2" marker-end="url(#bg2)" fill="none"/>
+
+<rect x="570" y="440" width="210" height="40" rx="10" fill="rgba(52,211,153,0.06)" stroke="rgba(52,211,153,0.25)"/>
+<text x="675" y="464" text-anchor="middle" fill="#34d399" font-size="11" font-weight="600">売上UP → 利益UP</text>
+<path d="M675,410 L675,436" stroke="#34d399" stroke-width="1.5" marker-end="url(#bg2)" fill="none"/>
+
+<rect x="560" y="510" width="230" height="40" rx="10" fill="rgba(52,211,153,0.06)" stroke="rgba(52,211,153,0.25)"/>
+<text x="675" y="534" text-anchor="middle" fill="#34d399" font-size="11" font-weight="600">品質UP → 顧客評判UP</text>
+<path d="M675,480 L675,506" stroke="#34d399" stroke-width="1.5" marker-end="url(#bg2)" fill="none"/>
+
+<rect x="540" y="580" width="260" height="40" rx="10" fill="rgba(52,211,153,0.06)" stroke="rgba(52,211,153,0.25)"/>
+<text x="670" y="598" text-anchor="middle" fill="#34d399" font-size="11" font-weight="600">好評判 → 採用しやすくなる</text>
+<text x="670" y="612" text-anchor="middle" fill="#6b7190" font-size="9">口コミ・業界評判で人が来る</text>
+<path d="M675,550 L672,576" stroke="#34d399" stroke-width="1.5" marker-end="url(#bg2)" fill="none"/>
+
+<!-- NEW: 好評判→採用チャネル効率UP -->
+<rect x="560" y="650" width="230" height="40" rx="10" fill="rgba(244,114,182,0.06)" stroke="rgba(244,114,182,0.25)"/>
+<text x="675" y="668" text-anchor="middle" fill="#f472b6" font-size="10" font-weight="600">NEW：チャネル効率もUP</text>
+<text x="675" y="682" text-anchor="middle" fill="#6b7190" font-size="9">媒体の反応率↑ 紹介の優先度↑</text>
+<path d="M670,620 L672,646" stroke="#f472b6" stroke-width="1.5" marker-end="url(#b1)" fill="none"/>
+
+<!-- 好循環FB -->
+<path d="M560,670 Q420,720 385,304" stroke="#34d399" stroke-width="2" marker-end="url(#bg2)" fill="none" stroke-dasharray="6,3"/>
+<text x="440" y="720" fill="#34d399" font-size="10" font-weight="700">さらに採れる（好循環）</text>
+
+<!-- ===== 悪循環 LEFT ===== -->
+<text x="120" y="360" fill="#f87171" font-size="12" font-weight="900">悪循環 🔴</text>
+
+<rect x="20" y="370" width="220" height="40" rx="10" fill="rgba(248,113,113,0.06)" stroke="rgba(248,113,113,0.25)"/>
+<text x="130" y="394" text-anchor="middle" fill="#f87171" font-size="11" font-weight="600">現場の負担が増える</text>
+<path d="M295,300 L205,375" stroke="#f87171" stroke-width="2" marker-end="url(#br)" fill="none"/>
+<text x="220" y="340" fill="#f87171" font-size="9" font-weight="600">採れないと…</text>
+
+<rect x="20" y="440" width="210" height="40" rx="10" fill="rgba(248,113,113,0.06)" stroke="rgba(248,113,113,0.25)"/>
+<text x="125" y="464" text-anchor="middle" fill="#f87171" font-size="11" font-weight="600">離職リスクが上がる</text>
+<path d="M130,410 L128,436" stroke="#f87171" stroke-width="1.5" marker-end="url(#br)" fill="none"/>
+
+<rect x="10" y="510" width="230" height="40" rx="10" fill="rgba(248,113,113,0.06)" stroke="rgba(248,113,113,0.25)"/>
+<text x="125" y="534" text-anchor="middle" fill="#f87171" font-size="11" font-weight="600">品質低下 → 納期遅れ</text>
+<path d="M125" y="480 L125,506" stroke="#f87171" stroke-width="1.5" marker-end="url(#br)" fill="none"/>
+
+<rect x="10" y="580" width="240" height="40" rx="10" fill="rgba(248,113,113,0.06)" stroke="rgba(248,113,113,0.25)"/>
+<text x="130" y="604" text-anchor="middle" fill="#f87171" font-size="11" font-weight="600">悪評が立つ → 案件も減る</text>
+<path d="M125,550 L128,576" stroke="#f87171" stroke-width="1.5" marker-end="url(#br)" fill="none"/>
+
+<!-- NEW: 悪評→チャネル効率DOWN -->
+<rect x="20" y="650" width="240" height="40" rx="10" fill="rgba(248,113,113,0.06)" stroke="rgba(248,113,113,0.25)"/>
+<text x="140" y="668" text-anchor="middle" fill="#f87171" font-size="10" font-weight="600">NEW：チャネル効率もDOWN</text>
+<text x="140" y="682" text-anchor="middle" fill="#6b7190" font-size="9">口コミで応募減/紹介会社も敬遠</text>
+<path d="M130,620 L135,646" stroke="#f87171" stroke-width="1.5" marker-end="url(#br)" fill="none"/>
+
+<!-- 悪循環FB -->
+<path d="M260,670 Q400,780 395,304" stroke="#f87171" stroke-width="2" marker-end="url(#br)" fill="none" stroke-dasharray="6,3"/>
+<text x="390" y="790" fill="#f87171" font-size="10" font-weight="700">さらに採れない（悪循環）</text>
+
+<!-- 料率 (NEW - center bottom) -->
+<rect x="300" y="740" width="200" height="36" rx="8" fill="rgba(244,114,182,0.06)" stroke="rgba(244,114,182,0.3)" stroke-dasharray="3,2"/>
+<text x="400" y="762" text-anchor="middle" fill="#f472b6" font-size="10" font-weight="700">NEW：料率は難易度に連動</text>
+</svg>
+</div>
+
+<div class="ig">
+<div class="ic2">
+<h4 style="color:var(--pink);">v2→v3 の追加ポイント</h4>
+<p><strong>①採用チャネル：</strong>ループの入口に追加。媒体/紹介/スカウトの選択がルートABの前段。<br><strong>②年齢×資格マトリクス：</strong>経験者ルートの判断基準を精緻化。<br><strong>③チャネル効率のフィードバック：</strong>好評判→チャネル効率UP / 悪評→DOWN の両方向。<br><strong>④料率：</strong>難易度連動であることを明示。</p>
+</div>
+<div class="ic2">
+<h4 style="color:var(--green);">核心メッセージ</h4>
+<p>左右のループは「採用」のノードで分岐する。<strong>1名の採用が悪循環を断ち切り、好循環のスイッチを入れる。</strong><br><br>法人に伝えるべきは：<br>「今採用しないとこの悪循環が加速します」（危機感）<br>「1名入れればこの好循環が回り始めます」（希望）<br>「だから今この採用は経営課題そのものです」（接続）</p>
+</div>
+</div>
+
+<div class="usage">
+<h3>📌 v4フレームワーク全体の使い方</h3>
+<div class="ui"><strong style="color:var(--red);">事前準備：</strong>経営ツリーの「00 市場環境」と「01 事業構造」を事前リサーチで埋める。商流ポジション・グループ構造・業界トレンドを把握してから商談に入る。</div>
+<div class="ui"><strong style="color:var(--orange);">商談序盤：</strong>「市場環境→事業理解」のブロックで法人の全体像を掴む。この会社がループのどこにいるかを見立てる。</div>
+<div class="ui"><strong style="color:var(--blue);">商談中盤：</strong>「採用要件」のブロックへ。年齢×資格マトリクスで粒度を上げる。PRポイントを法人から引き出す。</div>
+<div class="ui"><strong style="color:var(--green);">商談終盤：</strong>料率・条件の確認。「この難易度なら○%で」の交渉ロジック。次のアクションを宣言してクロージング。</div>
+<div class="ui"><strong style="color:var(--purple);">商談後：</strong>ヒアリングメモを2カラム（経営/採用）で整理。訴求変換メモを書く。チームに共有。</div>
+</div>
+</div>
+
+<!-- ================================================================ -->
+<!-- TAB 5: 前提・訴求 v4 -->
+<!-- ================================================================ -->
+<div class="tc" id="t4">
+<div class="ctrl">
+<button class="cb" onclick="oA(4)">▶ すべて展開</button>
+<button class="cb" onclick="cA(4)">◀ 折りたたむ</button>
+</div>
+<div class="sb"><div class="ic" style="background:rgba(244,114,182,.1);">📋</div><div><h2>前提情報・訴求ポイント（電気施工管理）</h2><div class="su">RA紹介の前提・求職者訴求・法人訴求を一覧化</div></div></div>
+
+<div class="t1 o">
+<div class="t1h" onclick="tg(this,'t1')">
+<div class="tn" style="background:rgba(74,142,255,.15);color:var(--blue);">前提</div>
+<div class="tt">紹介の前提情報</div>
+<div class="chv">▶</div>
+</div>
+<div class="t1c">
+<div class="l3"><span class="g num">資格：</span>無資格、電気工事士1種、電気工事士2種、電気施工管理1級、電気施工管理2級を主に扱う</div>
+<div class="l3"><span class="g num">紹介ポジション：</span>全員「電気施工管理」として紹介</div>
+<div class="l3"><span class="g num">年収レンジ：</span></div>
+<div class="l3" style="padding-left:20px;">未経験無資格→400万で紹介しやすい（相場350-400）</div>
+<div class="l3" style="padding-left:20px;">施工管理未経験+電工2種→350-450万</div>
+<div class="l3" style="padding-left:20px;">施工管理未経験+電工1種→500-600万</div>
+<div class="l3" style="padding-left:20px;">施工管理資格あり→500-600万</div>
+<div class="l3" style="padding-left:20px;">施工管理経験豊富→600万~</div>
+</div>
+</div>
+
+<div class="t1 o">
+<div class="t1h" onclick="tg(this,'t1')">
+<div class="tn" style="background:rgba(52,211,153,.15);color:var(--green);">求職者</div>
+<div class="tt">求職者への訴求ポイント</div>
+<div class="chv">▶</div>
+</div>
+<div class="t1c">
+<div class="l3"><span class="g pt">キャリア：</span>未経験でも電気施工管理できる／電気工事士から脱却して施工管理へ／独立時に元請けコネで自分が動かなくてよい</div>
+<div class="l3"><span class="g pt">収入・成長：</span>伸びているマーケットで3~5年で年収600-800／大手残業多めだと800万初手も</div>
+<div class="l3"><span class="g pt">働き方：</span>おもに未経験者向け、ルーティンで早く仕事を身につけられる／未経験で育ててくれる会社は丁寧</div>
+<div class="l3"><span class="g pt">将来性：</span>AIに代替されづらい職業／都市開発・太陽光・データセンター・半導体でニーズ増</div>
+<div class="l3"><span class="g wr">注意：</span>体力的に40超えるときつい／未経験35超で転職ほぼ不可</div>
+</div>
+</div>
+
+<div class="t1 o">
+<div class="t1h" onclick="tg(this,'t1')">
+<div class="tn" style="background:rgba(255,140,66,.15);color:var(--orange);">法人</div>
+<div class="tt">法人への訴求ポイント</div>
+<div class="chv">▶</div>
+</div>
+<div class="t1c">
+<div class="l3"><span class="g nw">採用ROI：</span>採用できたら1億以上入るケースが多い。1名の採用コストに1000万払ってもペイする。200%でやってるところもある</div>
+<div class="l3"><span class="g wr">緊急性：</span>欠員はすぐに充足させないと、他のスタッフに負担増→離職が加速してしまう</div>
+</div>
+</div>
+
+<div class="t1 o">
+<div class="t1h" onclick="tg(this,'t1')">
+<div class="tn" style="background:rgba(248,113,113,.15);color:var(--red);">市場</div>
+<div class="tt">電気施工管理の成長ドライバー</div>
+<div class="chv">▶</div>
+</div>
+<div class="t1c">
+<div class="l3">都市開発で新築の工事</div>
+<div class="l3">脱炭素で太陽光エネルギー</div>
+<div class="l3">AIのブームでデータセンター需要</div>
+<div class="l3">半導体工場でニーズ増えている</div>
+</div>
+</div>
+</div>
+
+</div>
+
+<script>
+function sw(i){document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('on',j===i));document.querySelectorAll('.tc').forEach((c,j)=>c.classList.toggle('on',j===i));}
+function tg(el,c){el.closest('.'+c).classList.toggle('o');}
+function oA(t){document.querySelectorAll('#t'+t+' .t1, #t'+t+' .t2').forEach(e=>e.classList.add('o'));}
+function cA(t){document.querySelectorAll('#t'+t+' .t1, #t'+t+' .t2').forEach(e=>e.classList.remove('o'));}
+</script>
+</body>
+</html>

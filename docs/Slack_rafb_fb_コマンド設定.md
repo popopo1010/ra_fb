@@ -1,25 +1,35 @@
-# Slack /rafb と /fb コマンドの設定
+# Slack /rafb_call と /rafb_mtg コマンドの設定
 
 ## 概要
 
 | コマンド | 用途 | 投稿先 |
 |----------|------|--------|
-| **/rafb** | 初回架電FB（RA） | #dk_ra_初回架電fb |
-| **/fb** | 法人面談FB（CA） | SLACK_WEBHOOK_URL_CA のチャンネル |
+| **/rafb_call** | 初回架電FB（RA） | #dk_ra_初回架電fb |
+| **/rafb_mtg** | 法人面談FB（CA） | SLACK_WEBHOOK_URL_CA のチャンネル |
 
-## Slack App に /fb を追加する
+## Slack App にコマンドを追加する
 
 1. [Slack API](https://api.slack.com/apps) で対象アプリを開く
 2. **Slash Commands** → **Create New Command**
 3. 以下を設定:
-   - **Command**: `/fb`
-   - **Request URL**: （Socket Mode の場合は空でOK。Socket Mode で自動処理）
-   - **Short Description**: `法人面談FBを生成`
-   - **Usage Hint**: `文字起こしを貼り付けてCA向けFBを生成`
 
-4. **Save**
+### /rafb_call（初回架電）
 
-※ /rafb が既に登録済みであれば、同様に /fb を追加するだけです。
+- **Command**: `/rafb_call`
+- **Request URL**: （Socket Mode の場合は空でOK。Socket Mode で自動処理）
+- **Short Description**: `初回架電FBを生成`
+- **Usage Hint**: `文字起こしを貼り付けてRA向けFBを生成`
+
+### /rafb_mtg（法人面談）
+
+- **Command**: `/rafb_mtg`
+- **Request URL**: （Socket Mode の場合は空でOK）
+- **Short Description**: `法人面談FBを生成`
+- **Usage Hint**: `文字起こしを貼り付けてCA向けFBを生成`
+
+4. 各コマンドを **Save**
+
+※ 旧 `/rafb`, `/fb` は削除して、上記2つに置き換えてください。
 
 ## .env の設定
 

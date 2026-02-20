@@ -6,8 +6,8 @@
 
 | 種別 | 説明 | コマンド/入力 |
 |------|------|---------------|
-| **RA** | 初回架電FB | `/rafb`、ファイルアップロード、CLI、Webhook |
-| **CA** | 法人面談FB | `/fb`、CLI、Webhook |
+| **RA** | 初回架電FB | `/rafb_call`、ファイルアップロード、CLI、Webhook |
+| **CA** | 法人面談FB | `/rafb_mtg`、CLI、Webhook |
 
 ※ 茂野・重野・大城は同一人物。架電記録は `data/input/ra/茂野/` に統合。
 
@@ -23,7 +23,7 @@ pip install -r requirements.txt
 # 3. CLI で FB 生成（Slack に投稿）
 python scripts/cli.py ra data/input/ra/茂野/TOKAI_EC_茂野_016.md
 
-# 4. Slack サーバー起動（/rafb, /fb が使える）
+# 4. Slack サーバー起動（/rafb_call, /rafb_mtg が使える）
 python scripts/slack_server.py
 ```
 
@@ -38,7 +38,7 @@ RA_FBシステム/
 │   ├── slack.py              # Slack 投稿
 │   └── company.py            # 法人情報抽出・事業リサーチ・比較
 ├── scripts/
-│   ├── slack_server.py       # Slack /rafb /fb（メイン起動）
+│   ├── slack_server.py       # Slack /rafb_call /rafb_mtg（メイン起動）
 │   ├── webhook_server.py     # Notta × Zapier
 │   ├── cli.py                # コマンドライン（ra/ca）
 │   ├── compare_companies.py  # 都道府県×セグメントで法人比較
@@ -54,7 +54,8 @@ RA_FBシステム/
 │       └── 法人マスタ/        # FB生成時に自動抽出・格納（事業リサーチ含む）
 ├── references/
 │   ├── manual/               # 架電マニュアル・PSS・チェックリスト
-│   └── candidate_attract/    # 候補者アトラクト
+│   ├── candidate_attract/    # 候補者アトラクト
+│   └── 営業のヒアリング情報/   # 営業ヒアリング・構造マップ・訴求ポイント
 ├── docs/
 ├── pyproject.toml
 └── requirements.txt
@@ -95,7 +96,7 @@ python scripts/bulk_import_company.py             # 実行
 
 ## 入力方法
 
-1. **Slack /rafb, /fb** … モーダルに文字起こしを貼り付け
+1. **Slack /rafb_call, /rafb_mtg** … モーダルに文字起こしを貼り付け
 2. **Slack ファイルアップロード** … .txt/.md をチャンネルにドロップ（RA のみ）
 3. **CLI** … `python scripts/cli.py ra/ca <ファイルパス>`
 4. **Notta × Zapier** … Webhook に POST（`python scripts/webhook_server.py` + ngrok）

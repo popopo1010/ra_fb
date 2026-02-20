@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 import os
 import re
 import time
@@ -12,29 +13,21 @@ from typing import List, Optional
 from .config import load_env, MASTER_DIR, CANDIDATE_ATTRACT_DIR, SEGMENT_ORDER
 
 load_env()
-
-# マーケットセグメント情報（工種×用途の2軸＋マーケットサイズ）
-# references/candidate_attract/market_segments.py と同期
-_SEGMENT_MARKET_INFO: dict[str, dict] = {
-    "電気系": {"market_size": "設備19兆円の約半数", "axis": "工種"},
-    "土木": {"market_size": "土木工事 約35兆円", "axis": "工種"},
-    "建築": {"market_size": "建築工事 約40兆円", "axis": "工種"},
-    "管工事": {"market_size": "空調・衛生設備", "axis": "工種"},
-    "DC": {"market_size": "急拡大（国策）", "axis": "用途"},
-    "再エネ": {"market_size": "高成長（補助金・FIT）", "axis": "用途"},
-    "物流": {"market_size": "前年比10%超", "axis": "用途"},
-    "工場": {"market_size": "半導体・脱炭素で大型案件", "axis": "用途"},
-    "オフィス": {"market_size": "都市再開発", "axis": "用途"},
-    "公共": {"market_size": "生活基盤50%、産業基盤34%", "axis": "用途"},
-    "住宅": {"market_size": "約16兆円", "axis": "用途"},
-    "商業施設": {"market_size": "商業施設工事", "axis": "用途"},
-    "自衛隊": {"market_size": "防衛関連施設", "axis": "用途"},
-    "その他": {"market_size": "", "axis": "その他"},
-}
+logger = logging.getLogger(__name__)
 
 
-def _get_segment_market_size(segment: str) -> str:
-    return _SEGMENT_MARKET_INFO.get(segment, {}).get("market_size", "")
+def _get_segment_info(segment: str) -> dict:
+    """market_segments.py からセグメント情報を取得（単一ソース）"""
+    try:
+        import sys
+        _path = str(CANDIDATE_ATTRACT_DIR)
+        if _path not in sys.path:
+            sys.path.insert(0, _path)
+        from market_segments import get_segment_info
+        return get_segment_info(segment)
+    except Exception as e:
+        logger.debug("market_segments 読み込み失敗: %s", e)
+        return {"market_size": "", "axis": "その他"}
 
 
 def _research_company_online(company_name: str) -> str:
@@ -86,9 +79,11 @@ def _research_company_online(company_name: str) -> str:
                         elif body:
                             all_snippets.append(f"【{title}】\n{body}")
                 time.sleep(0.5)
-            except Exception:
+            except Exception as e:
+                logger.debug("Web検索クエリ失敗 %s: %s", q, e)
                 continue
-    except Exception:
+    except Exception as e:
+        logger.warning("Web検索失敗 %s: %s", company_name, e)
         return ""
 
     if not all_snippets:
@@ -282,7 +277,8 @@ def _extract_company_info_with_claude(
             temperature=0.2,
         )
         return (response.content[0].text if response.content else "").strip()
-    except Exception:
+    except Exception as e:
+        logger.warning("法人情報抽出（Claude）失敗: %s", e)
         return ""
 
 
@@ -406,7 +402,8 @@ def _supplement_from_research_with_claude(
             temperature=0.2,
         )
         return (response.content[0].text if response.content else "").strip()
-    except Exception:
+    except Exception as e:
+        logger.warning("法人情報抽出（Claude・リサーチ付き）失敗: %s", e)
         return ""
 
 
@@ -522,7 +519,8 @@ def list_companies_by_region_segment(
 
             if prefecture in prefs and segment in segs:
                 results.append({"path": f, "meta": meta, "body": body})
-        except Exception:
+        except Exception as e:
+            logger.debug("法人マスタ解析スキップ %s: %s", f.name, e)
             continue
 
     return results
@@ -584,7 +582,8 @@ def collect_attract_examples_from_masters() -> List[dict]:
                 "growth": growth,
                 "strategy": strategy,
             })
-        except Exception:
+        except Exception as e:
+            logger.debug("法人マスタ収集スキップ %s: %s", f.name, e)
             continue
 
     return results
@@ -645,8 +644,9 @@ def update_playbook_from_masters() -> Optional[Path]:
     for seg in ordered_segs:
         items = by_segment[seg]
         unique_in_seg = len(set(ex["company_name"] for ex in items))
-        axis = _SEGMENT_MARKET_INFO.get(seg, {}).get("axis", "")
-        mkt = _get_segment_market_size(seg)
+        info = _get_segment_info(seg)
+        axis = info.get("axis", "")
+        mkt = info.get("market_size", "")
         lines.append(f"| {axis} | {seg} | {mkt} | {unique_in_seg} 社 |")
     lines.extend(["", ""])
 

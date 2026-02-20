@@ -11,9 +11,12 @@ references/
 │   ├── 事前商談前リサーチ.md
 │   ├── PSS_プロフェッショナルセリングスキル.md
 │   └── 初回面談_確認チェックリスト.md
-└── candidate_attract/         # 候補者アトラクト（会社の魅力の伝え方）
-    ├── recruitment-playbook.md
-    └── market_segments.py     # マーケットセグメント定義（工種×用途）
+├── candidate_attract/         # 候補者アトラクト（会社の魅力の伝え方）
+│   ├── recruitment-playbook.md
+│   └── market_segments.py     # マーケットセグメント定義（工種×用途）
+└── 営業のヒアリング情報/       # 営業ヒアリング・構造マップ・訴求ポイント
+    ├── 電気施工管理_構造マップ_v4.html
+    └── README.md
 ```
 
 ## データの場所

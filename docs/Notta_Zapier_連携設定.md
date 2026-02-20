@@ -80,8 +80,8 @@ ngrok http 5000
 | ra_name | 固定値 or 手動入力（type=ra 時、任意: 小山田, 大城, 茂野, 重野） | 任意 |
 
 **type の分岐:**
-- **ra** → 初回架電FB（/rafb）。#dk_ra_初回架電fb に投稿
-- **ca** → 法人面談FB（/fb）。SLACK_WEBHOOK_URL_CA のチャンネルに投稿
+- **ra** → 初回架電FB（/rafb_call）。#dk_ra_初回架電fb に投稿
+- **ca** → 法人面談FB（/rafb_mtg）。SLACK_WEBHOOK_URL_CA のチャンネルに投稿
 
 **Zapier で RA/CA を分ける方法:**
 - **方法A**: Zap を2つ作る（RA 用・CA 用）。それぞれ type を固定値に設定

@@ -14,6 +14,7 @@ from .config import (
     CA_DIR,
     MANUAL_DIR,
     CANDIDATE_ATTRACT_DIR,
+    HEARING_DIR,
 )
 from .utils import extract_ra_from_path, extract_ra_from_filename, extract_company_name
 from .feedback import generate_feedback_ra, generate_feedback_ca
@@ -38,6 +39,7 @@ __all__ = [
     "CA_DIR",
     "MANUAL_DIR",
     "CANDIDATE_ATTRACT_DIR",
+    "HEARING_DIR",
     "load_env",
     "extract_ra_from_path",
     "extract_ra_from_filename",

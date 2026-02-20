@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 import os
 from pathlib import Path
 from typing import Dict
@@ -9,35 +10,41 @@ from typing import Dict
 from .config import load_env, MANUAL_DIR, CANDIDATE_ATTRACT_DIR, LONG_CALLS_DIR, CA_DIR
 
 load_env()
+logger = logging.getLogger(__name__)
 
 
 def _load_candidate_attract() -> str:
     """候補者アトラクト（会社の魅力の伝え方）を読み込む。
-    SALES_FB_AGENT_PATH が設定されていれば sales-fb-agent から、
-    なければ references/candidate_attract/ のローカルコピーを使用。
+    セクション5（法人別事例）は除外し、訴求軸・候補者タイプ×セグメントのみ（トークン削減）。
     """
     sales_path = os.environ.get("SALES_FB_AGENT_PATH")
     if sales_path:
         p = Path(sales_path) / "reference" / "domain" / "construction" / "04-recruitment-playbook.md"
         if p.exists():
-            return p.read_text(encoding="utf-8")[:6000]
+            text = p.read_text(encoding="utf-8")
+            if "## 5." in text:
+                text = text.split("## 5.")[0].rstrip()
+            return text[:6000]
     p = CANDIDATE_ATTRACT_DIR / "recruitment-playbook.md"
     if p.exists():
-        return p.read_text(encoding="utf-8")[:6000]
+        text = p.read_text(encoding="utf-8")
+        if "## 5." in text:
+            text = text.split("## 5.")[0].rstrip()
+        return text[:6000]
     return ""
 
 
 def _load_references_ra() -> Dict[str, str]:
-    """RA 用リファレンス"""
+    """RA 用リファレンス（トークン削減版：要点・抜粋を使用）"""
     refs = {}
     paths = {
-        "manual": MANUAL_DIR / "営業新規架電マニュアル.md",
-        "pss": MANUAL_DIR / "PSS_プロフェッショナルセリングスキル.md",
-        "checklist": MANUAL_DIR / "初回面談_確認チェックリスト.md",
+        "manual": MANUAL_DIR / "架電マニュアル_要点.md",
+        "pss": MANUAL_DIR / "PSS_要点.md",
         "reception": LONG_CALLS_DIR / "受付突破_断りパターンと繋ぎ方.md",
         "kadai": LONG_CALLS_DIR / "茂野vs小山田_課題整理.md",
+        "kadai2": LONG_CALLS_DIR / "小山田vs大城_課題整理.md",
     }
-    limits = {"manual": 7000, "pss": 10000, "checklist": 4000, "reception": 4000, "kadai": 6000}
+    limits = {"manual": 5000, "pss": 3000, "reception": 4000, "kadai": 4000, "kadai2": 3000}
     for key, p in paths.items():
         if p.exists():
             refs[key] = p.read_text(encoding="utf-8")[: limits.get(key, 8000)]
@@ -52,7 +59,7 @@ def _load_references_ca() -> Dict[str, str]:
     refs = {}
     paths = {
         "template": CA_DIR / "_template_議事録.md",
-        "manual": MANUAL_DIR / "営業新規架電マニュアル.md",
+        "manual": MANUAL_DIR / "架電マニュアル_要点.md",
     }
     for key, p in paths.items():
         if p.exists():
@@ -69,7 +76,8 @@ def _generate_ra_with_claude(transcript: str, refs: Dict[str, str], ra_name: str
 
     api_key = os.environ.get("ANTHROPIC_API_KEY")
     if not api_key:
-        return _template_ra(ra_name)
+        logger.warning("ANTHROPIC_API_KEY が未設定です。.env に設定するとAIが自動で記入します。")
+        return "※ ANTHROPIC_API_KEY が未設定です。.env に設定して再実行してください。\n\n" + _template_ra(ra_name)
 
     client = Anthropic(api_key=api_key)
     ref_text = "\n\n---\n\n".join(f"【{k}】\n{v}" for k, v in refs.items())
@@ -80,11 +88,10 @@ def _generate_ra_with_claude(transcript: str, refs: Dict[str, str], ra_name: str
 以下の「初回架電の文字起こし」を、リファレンスに基づいて評価し、RA向けのフィードバックを出力してください。
 
 【リファレンスの活用】
-・manual: 架電マニュアル（受付突破・ヒアリング・業界知識）
-・pss: PSS（オープニング・プロービング・サポーティング・クロージング）の観点で評価
-・checklist: 初回面談の確認項目
+・manual: 架電マニュアル要点（受付突破・ヒアリング・業界知識）
+・pss: PSS要点（オープニング・プロービング・サポーティング・クロージング）の観点で評価
 ・reception: 受付突破の断りパターンと繋ぎ方
-・kadai: 課題整理・改善の観点
+・kadai, kadai2: 課題整理・改善の観点（茂野vs小山田、小山田vs大城）
 ・attract: 候補者アトラクト（訴求軸・候補者タイプ×セグメント・伝え方）※あれば
 
 【評価のスタンス】
@@ -120,6 +127,7 @@ def _generate_ra_with_claude(transcript: str, refs: Dict[str, str], ra_name: str
         )
         return (response.content[0].text if response.content else "").strip()
     except Exception as e:
+        logger.exception("RA FB 生成エラー")
         return f"[AI生成エラー: {e}]\n\n" + _template_ra(ra_name)
 
 
@@ -132,7 +140,8 @@ def _generate_ca_with_claude(transcript: str, refs: Dict[str, str]) -> str:
 
     api_key = os.environ.get("ANTHROPIC_API_KEY")
     if not api_key:
-        return _template_ca()
+        logger.warning("ANTHROPIC_API_KEY が未設定です。.env に設定するとAIが自動で記入します。")
+        return "※ ANTHROPIC_API_KEY が未設定です。.env に設定して再実行してください。\n\n" + _template_ca()
 
     client = Anthropic(api_key=api_key)
     ref_text = "\n\n---\n\n".join(f"【{k}】\n{v}" for k, v in refs.items())
@@ -174,6 +183,7 @@ def _generate_ca_with_claude(transcript: str, refs: Dict[str, str]) -> str:
         )
         return (response.content[0].text if response.content else "").strip()
     except Exception as e:
+        logger.exception("CA FB 生成エラー")
         return f"[AI生成エラー: {e}]\n\n" + _template_ca()
 
 

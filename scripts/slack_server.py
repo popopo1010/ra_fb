@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """
-Slack /rafb ・ /fb サーバー（Socket Mode）
+Slack /rafb_call（初回架電）・ /rafb_mtg（法人面談）サーバー（Socket Mode）
 
 使い方:
   python scripts/slack_server.py
 """
 
+import logging
 import os
 import sys
 import threading
@@ -13,6 +14,7 @@ from pathlib import Path
 from typing import Optional, Tuple
 
 ROOT = Path(__file__).resolve().parent.parent
+logger = logging.getLogger(__name__)
 sys.path.insert(0, str(ROOT))
 
 from ra_fb import (
@@ -65,7 +67,8 @@ def _download_slack_file(client, file_id: str) -> Tuple[Optional[str], Optional[
             text = r.read().decode("utf-8", errors="replace")
         chs = f.get("channels") or []
         return text, chs[0] if chs else None, f.get("user"), f.get("name") or ""
-    except Exception:
+    except Exception as e:
+        logger.debug("Slackファイル取得失敗: %s", e)
         return None, None, None, ""
 
 
@@ -108,14 +111,14 @@ def _get_modal_values(values: dict, block_id: str, action_id: str) -> str:
     return str(val).strip()
 
 
-@app.command("/rafb")
-def cmd_rafb(ack, body, client, command):
+@app.command("/rafb_call")
+def cmd_rafb_call(ack, body, client, command):
     ack()
     _open_ra_modal(client, body["trigger_id"], command.get("channel_id", ""))
 
 
-@app.command("/fb")
-def cmd_fb(ack, body, client, command):
+@app.command("/rafb_mtg")
+def cmd_rafb_mtg(ack, body, client, command):
     ack()
     _open_ca_modal(client, body["trigger_id"], command.get("channel_id", ""))
 
@@ -136,8 +139,8 @@ def view_rafb(ack, body, client, view):
     if user_id and channel_id:
         try:
             client.chat_postEphemeral(channel=channel_id, user=user_id, text="処理中です。完了次第 #dk_ra_初回架電fb に投稿します。")
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug("ephemeral投稿失敗(RA): %s", e)
 
     def _do():
         msg = generate_feedback_ra(transcript, ra_name=ra_name, company_name=company_name)
@@ -146,8 +149,8 @@ def view_rafb(ack, body, client, view):
             extract_and_save_company_info(
                 transcript, company_name=company_name, source_type="ra", use_research=True
             )
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning("法人情報保存失敗(RA): %s", e)
 
     threading.Thread(target=_do, daemon=True).start()
 
@@ -166,8 +169,8 @@ def view_cafb(ack, body, client, view):
     if user_id and channel_id:
         try:
             client.chat_postEphemeral(channel=channel_id, user=user_id, text="処理中です。完了次第 CA FB チャンネルに投稿します。")
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug("ephemeral投稿失敗(CA): %s", e)
 
     def _do():
         msg = generate_feedback_ca(transcript, company_name=company_name)
@@ -177,8 +180,8 @@ def view_cafb(ack, body, client, view):
             extract_and_save_company_info(
                 transcript, company_name=company_name, source_type="ca", use_research=True
             )
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning("法人情報保存失敗(CA): %s", e)
 
     threading.Thread(target=_do, daemon=True).start()
 
@@ -200,8 +203,8 @@ def evt_file_shared(event, client):
     if user_id and channel_id:
         try:
             client.chat_postEphemeral(channel=channel_id, user=user_id, text="テキストファイルを検出しました。処理中です。")
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug("ephemeral投稿失敗(file_shared): %s", e)
 
     def _do():
         msg = generate_feedback_ra(text, ra_name=ra_name, company_name=company_name)
@@ -210,8 +213,8 @@ def evt_file_shared(event, client):
             extract_and_save_company_info(
                 text, company_name=company_name, source_type="ra", use_research=True
             )
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning("法人情報保存失敗(file_shared): %s", e)
 
     threading.Thread(target=_do, daemon=True).start()
 
@@ -219,7 +222,7 @@ def evt_file_shared(event, client):
 if __name__ == "__main__":
     print("=" * 50)
     print("RA FB サーバー起動")
-    print("Slack: /rafb（RA） /fb（CA）")
+    print("Slack: /rafb_call（初回架電） /rafb_mtg（法人面談）")
     if not SLACK_WEBHOOK_URL:
         print("⚠️ SLACK_WEBHOOK_URL が未設定です")
     print("=" * 50)

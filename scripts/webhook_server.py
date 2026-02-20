@@ -7,11 +7,13 @@ Notta × Zapier Webhook サーバー
   ngrok http 5000  # 公開
 """
 
+import logging
 import os
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+logger = logging.getLogger(__name__)
 sys.path.insert(0, str(ROOT))
 
 from ra_fb import load_env, generate_feedback_ra, generate_feedback_ca, post_to_slack, extract_and_save_company_info
@@ -64,9 +66,10 @@ def webhook_notta():
                 source_type=fb_type,
                 use_research=True,
             )
-        except Exception:
-            pass
+        except Exception as ex:
+            logger.warning("法人情報保存失敗(webhook): %s", ex)
     except Exception as e:
+        logger.exception("Webhook FB生成失敗")
         return jsonify({"ok": False, "error": str(e)[:500]}), 500
 
     if not posted:

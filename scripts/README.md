@@ -4,7 +4,7 @@
 
 | スクリプト | 用途 |
 |------------|------|
-| `slack_server.py` | Slack /rafb, /fb, ファイルアップロード。**通常はこれを起動** |
+| `slack_server.py` | Slack /rafb_call, /rafb_mtg, ファイルアップロード。**通常はこれを起動** |
 | `webhook_server.py` | Notta × Zapier Webhook 受信 |
 | `cli.py` | RA/CA FB 生成 CLI。`ra <ファイル>` / `ca <ファイル>` |
 | `compare_companies.py` | 都道府県×セグメントで法人比較。`愛知 電気系` 等 |

@@ -21,6 +21,7 @@ MASTER_DIR = OUTPUT_DIR / "法人マスタ"  # 法人情報（FB生成時に自�
 # 参照資料
 MANUAL_DIR = REF_DIR / "manual"  # 架電マニュアル・PSS
 CANDIDATE_ATTRACT_DIR = REF_DIR / "candidate_attract"  # 候補者アトラクト
+HEARING_DIR = REF_DIR / "営業のヒアリング情報"  # 営業ヒアリング・構造マップ・訴求ポイント
 
 # 事業ドメイン（セグメント）の表示順（プレイブック・法人比較で共通）
 SEGMENT_ORDER = [
